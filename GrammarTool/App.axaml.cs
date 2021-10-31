@@ -17,7 +17,7 @@ namespace GrammarTool
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                desktop.MainWindow = new MainWindow
+                desktop.MainWindow = new MainWindowView
                 {
                     DataContext = new MainWindowViewModel(),
                 };

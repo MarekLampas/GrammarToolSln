@@ -1,0 +1,26 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="500"
+             x:Class="GrammarTool.Views.LandingPageView">
+  <DockPanel>
+    <Button DockPanel.Dock="Bottom"
+            HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+            Command="{Binding $parent[Window].DataContext.CreateGrammar}">
+      Open grammar
+    </Button>
+    <Button DockPanel.Dock="Bottom"
+            HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+            Command="{Binding $parent[Window].DataContext.CreateGrammar}">
+      Let's create grammar
+    </Button>
+    <TextBlock FontStyle="Italic"
+               TextWrapping="WrapWithOverflow"
+               TextAlignment="Center"
+               HorizontalAlignment="Stretch"
+               VerticalAlignment="Center">
+      Welcome to grammar learning tool. Let's begin!
+    </TextBlock>
+  </DockPanel>
+</UserControl>

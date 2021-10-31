@@ -4,14 +4,11 @@ using Avalonia.Markup.Xaml;
 
 namespace GrammarTool.Views
 {
-    public partial class MainWindow : Window
+    public partial class GrammarPanelView : UserControl
     {
-        public MainWindow()
+        public GrammarPanelView()
         {
             InitializeComponent();
-#if DEBUG
-            this.AttachDevTools();
-#endif
         }
 
         private void InitializeComponent()
