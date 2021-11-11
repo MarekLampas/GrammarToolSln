@@ -18,9 +18,32 @@
                 HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">
           Submit
         </Button>
-        <TextBox Watermark="Insert Rules"
-                 AcceptsReturn="True"
-                 TextWrapping="Wrap"/>
+        <StackPanel Spacing="5">
+          <ItemsControl Items="{Binding Rules}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Margin="15 0 0 0"
+                           Text="{Binding Rule}"/>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+          <Grid RowDefinitions="Auto,Auto,Auto">
+            <TextBox Grid.Row="0"
+                     Grid.Column="0"
+                     Text="{Binding NewRule}"
+                     Watermark="Insert Rule (e.g., A -> aA)"
+                    HorizontalAlignment="Left"
+                    Width="200"/>
+            <Button Grid.Row="0"
+                    Grid.Column="1"
+                    IsDefault="True"
+                    HorizontalAlignment="Right"
+                    Width="50"
+                    Command="{Binding Add}">
+              Add
+            </Button>
+          </Grid>
+        </StackPanel>
       </DockPanel>
     </SplitView.Pane>
 

@@ -3,6 +3,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using GrammarTool.ViewModels;
 using GrammarTool.Views;
+using GrammarTool.Services;
 
 namespace GrammarTool
 {
@@ -17,9 +18,11 @@ namespace GrammarTool
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
+                var db = new Database();
+
                 desktop.MainWindow = new MainWindowView
                 {
-                    DataContext = new MainWindowViewModel(),
+                    DataContext = new MainWindowViewModel(db),
                 };
             }
 
