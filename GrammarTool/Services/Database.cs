@@ -14,11 +14,13 @@ namespace GrammarTool.Services
         /// Paramater for new instance of GrammarPanelViewModel()
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<GrammarRule> GetRules() => new[]
-        {
-            new GrammarRule(rule: "S -> A", isValid: true ),
-            new GrammarRule(rule: "A -> aB", isValid: true ),
-            new GrammarRule(rule: "B -> b", isValid: true )
-        };
+        public IEnumerable<GrammarRule> GetRules() => new List<GrammarRule>();
+        //{
+        //    new GrammarRule(rule: "S->A", isValid: true ),
+        //    new GrammarRule(rule: "A->aB", isValid: true ),
+        //    new GrammarRule(rule: "B->b", isValid: true )
+        //};
+
+        public IEnumerable<LL1FirstFollow> InicializeFirstFollow() => new List<LL1FirstFollow>();
     }
 }

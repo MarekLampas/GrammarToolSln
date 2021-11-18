@@ -5,8 +5,8 @@
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="500"
              x:Class="GrammarTool.Views.GrammarPanelView">
   <SplitView IsPaneOpen="True"
-           DisplayMode="Inline"
-           OpenPaneLength="250">
+             DisplayMode="Inline"
+             OpenPaneLength="250">
     <SplitView.Pane>
       <DockPanel>
         <TextBlock Text="Grammar"
@@ -15,7 +15,9 @@
                    HorizontalAlignment="Center"
                    Margin="10"/>
         <Button DockPanel.Dock="Bottom"
-                HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Center"
+                Command="{Binding Submit}">
           Submit
         </Button>
         <StackPanel Spacing="5">
@@ -32,8 +34,8 @@
                      Grid.Column="0"
                      Text="{Binding NewRule}"
                      Watermark="Insert Rule (e.g., A -> aA)"
-                    HorizontalAlignment="Left"
-                    Width="200"/>
+                     HorizontalAlignment="Left"
+                     Width="200"/>
             <Button Grid.Row="0"
                     Grid.Column="1"
                     IsDefault="True"
@@ -47,12 +49,27 @@
       </DockPanel>
     </SplitView.Pane>
 
-    <Grid>
-      <TextBlock Text="Parsing ressult"
+    <SplitView IsPaneOpen="True"
+               DisplayMode="Inline"
+               OpenPaneLength="350"
+               PaneBackground="#111">
+      <SplitView.Pane>
+        <StackPanel Spacing="5">
+          <ItemsControl Items="{Binding Grammar._LL1FirstFollow}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Margin="15 0 0 0"
+                           Text="{Binding _FirstSetString}"/>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
+      </SplitView.Pane>
+    <TextBlock Text="Parsing ressult"
                  FontSize="24"
                  VerticalAlignment="Top"
                  HorizontalAlignment="Center"
                  Margin="10"/>
-    </Grid>
+    </SplitView>
   </SplitView>
 </UserControl>
