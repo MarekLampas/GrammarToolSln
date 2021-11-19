@@ -10,18 +10,17 @@ namespace GrammarTool.Models
 {
     public class LL1FirstFollow
     {
-        public string _NonTerminal;
+        public string _NonTerminal { get; set; }
 
         public Dictionary<string, HashSet<string>> _FirstSetByProduction;
 
         public HashSet<string> _FirstSet;
 
-        public string? _FirstSetString { get; set; }
+        public string _FirstSetString { get; set; }
 
         public HashSet<string> _FollowSet;
 
-        //remake to use get; set;
-        public string _FollowSetString;
+        public string _FollowSetString { get; set; }
 
         public LL1InputGrammar _LL1InputGrammar;
 

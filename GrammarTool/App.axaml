@@ -8,5 +8,7 @@
 
     <Application.Styles>
         <FluentTheme Mode="Dark"/>
+        <!--Source: https://github.com/AvaloniaUI/Avalonia/issues/3446 added this line because DataGrid did not work-->
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Default.xaml"/>
     </Application.Styles>
 </Application>

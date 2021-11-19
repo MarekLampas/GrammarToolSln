@@ -54,15 +54,25 @@
                OpenPaneLength="350"
                PaneBackground="#111">
       <SplitView.Pane>
-        <StackPanel Spacing="5">
-          <ItemsControl Items="{Binding Grammar._LL1FirstFollow}">
-            <ItemsControl.ItemTemplate>
-              <DataTemplate>
-                <TextBlock Margin="15 0 0 0"
-                           Text="{Binding _FirstSetString}"/>
-              </DataTemplate>
-            </ItemsControl.ItemTemplate>
-          </ItemsControl>
+        <StackPanel>
+          <Grid>
+            <TextBlock Margin="5 15 0 0">First Set</TextBlock>
+            <DataGrid Name="MyDataGrid" Items="{Binding Grammar._LL1FirstFollow}" AutoGenerateColumns="False" Margin="0 30 0 0" >
+              <DataGrid.Columns>
+                <DataGridTextColumn Header="Non Terminal"  Binding="{Binding _NonTerminal}"/>
+                <DataGridTextColumn Header="Symbols" Binding="{Binding _FirstSetString}" />
+              </DataGrid.Columns>
+            </DataGrid>
+          </Grid>
+          <Grid>
+            <TextBlock Margin="5 15 0 0">FolloW Set</TextBlock>
+            <DataGrid Name="MyDataGridGrid" Items="{Binding Grammar._LL1FirstFollow}" AutoGenerateColumns="False" Margin="0 30 0 0" >
+              <DataGrid.Columns>
+                <DataGridTextColumn Header="Non Terminal"  Binding="{Binding _NonTerminal}"/>
+                <DataGridTextColumn Header="Symbols" Binding="{Binding _FollowSetString}" />
+              </DataGrid.Columns>
+            </DataGrid>
+          </Grid>
         </StackPanel>
       </SplitView.Pane>
     <TextBlock Text="Parsing ressult"
