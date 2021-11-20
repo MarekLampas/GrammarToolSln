@@ -22,7 +22,7 @@ namespace GrammarTool.Helpers
         
         public Dictionary<string, List<string>> _ProductionDict { get; private set; }
 
-        public LL1InputGrammar(IEnumerable<GrammarRule> rules)
+        public LL1InputGrammar(IEnumerable<LL1GrammarRule> rules)
         {
             Proccess(rules);
         }
@@ -31,7 +31,7 @@ namespace GrammarTool.Helpers
         /// Asumes that non terminars are upper characters and everything else is terminal
         /// </summary>
         /// <param name="rules"></param>
-        private void Proccess(IEnumerable<GrammarRule> rules)
+        private void Proccess(IEnumerable<LL1GrammarRule> rules)
         {
             _Terminals = new List<string>();
             

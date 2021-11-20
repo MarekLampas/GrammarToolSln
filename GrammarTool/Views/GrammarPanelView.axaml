@@ -21,10 +21,10 @@
           Submit
         </Button>
         <StackPanel Spacing="5">
-          <ItemsControl Items="{Binding Rules}">
+          <ItemsControl Items="{Binding Grammar._LL1Rules}">
             <ItemsControl.ItemTemplate>
               <DataTemplate>
-                <TextBlock Margin="15 0 0 0"
+                <TextBlock Margin="15 5 0 0"
                            Text="{Binding Rule}"/>
               </DataTemplate>
             </ItemsControl.ItemTemplate>
@@ -49,15 +49,15 @@
       </DockPanel>
     </SplitView.Pane>
 
-    <SplitView IsPaneOpen="True"
+    <SplitView IsPaneOpen="{Binding PaneOpen}"
                DisplayMode="Inline"
                OpenPaneLength="350"
                PaneBackground="#111">
       <SplitView.Pane>
         <StackPanel>
           <Grid>
-            <TextBlock Margin="5 15 0 0">First Set</TextBlock>
-            <DataGrid Name="MyDataGrid" Items="{Binding Grammar._LL1FirstFollow}" AutoGenerateColumns="False" Margin="0 30 0 0" >
+            <TextBlock Foreground="Aqua" Margin="5 15 0 0">First Set</TextBlock>
+            <DataGrid Name="FirstSet" Items="{Binding Grammar._LL1FirstFollow}" AutoGenerateColumns="False" Margin="0 30 0 0" RowBackground="#252525" Background="#202020">
               <DataGrid.Columns>
                 <DataGridTextColumn Header="Non Terminal"  Binding="{Binding _NonTerminal}"/>
                 <DataGridTextColumn Header="Symbols" Binding="{Binding _FirstSetString}" />
@@ -65,8 +65,17 @@
             </DataGrid>
           </Grid>
           <Grid>
+            <TextBlock Margin="5 15 0 0">First Set By Production</TextBlock>
+            <DataGrid Name="FirstByProductionSet" Items="{Binding Grammar._FirstSetByProduction}" AutoGenerateColumns="False" Margin="0 30 0 0" RowBackground="#252525" Background="#202020">
+              <DataGrid.Columns>
+                <DataGridTextColumn Header="Production"  Binding="{Binding _Production}"/>
+                <DataGridTextColumn Header="Symbols" Binding="{Binding _SymbolsString}" />
+              </DataGrid.Columns>
+            </DataGrid>
+          </Grid>
+          <Grid>
             <TextBlock Margin="5 15 0 0">FolloW Set</TextBlock>
-            <DataGrid Name="MyDataGridGrid" Items="{Binding Grammar._LL1FirstFollow}" AutoGenerateColumns="False" Margin="0 30 0 0" >
+            <DataGrid Name="FollowSet" Items="{Binding Grammar._LL1FirstFollow}" AutoGenerateColumns="False" Margin="0 30 0 0" RowBackground="#252525" Background="#202020">
               <DataGrid.Columns>
                 <DataGridTextColumn Header="Non Terminal"  Binding="{Binding _NonTerminal}"/>
                 <DataGridTextColumn Header="Symbols" Binding="{Binding _FollowSetString}" />

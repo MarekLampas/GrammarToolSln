@@ -31,11 +31,11 @@ namespace GrammarTool.ViewModels
 
         public void CreateGrammar()
         {
-            var vm = new GrammarPanelViewModel(Grammar.Rules, Grammar.Grammar._LL1FirstFollow);
+            var vm = new GrammarPanelViewModel(Grammar.Grammar._LL1Rules, Grammar.Grammar._LL1FirstFollow);
 
             vm.Add.Subscribe(model =>
             {
-                Grammar.Rules.Add(model);
+                Grammar.Grammar._LL1Rules.Add(model);
 
                 //Was able to add just one rule - ReactiveCommand Subscribe() worked just once
                 //Content = new GrammarPanelViewModel(Rules.Rules);
@@ -46,7 +46,7 @@ namespace GrammarTool.ViewModels
             {
                 var lL1ComputeFirstFollow = new LL1ComputeFirstFollow(model);
 
-                Grammar.Grammar._LL1FirstFollow = new ObservableCollection<LL1FirstFollow>(lL1ComputeFirstFollow.Compute(Grammar.Rules));
+                Grammar.Grammar._LL1FirstFollow = new ObservableCollection<LL1FirstFollow>(lL1ComputeFirstFollow.Compute(Grammar.Grammar._LL1Rules));
 
                 //Content = new GrammarPanelViewModel(Grammar.Rules, Grammar.Grammar._LL1FirstFollow);
                 CreateGrammar();

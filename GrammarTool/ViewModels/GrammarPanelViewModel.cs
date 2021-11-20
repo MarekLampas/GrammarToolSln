@@ -15,11 +15,9 @@ namespace GrammarTool.ViewModels
     {
         string rule;
 
-        public GrammarPanelViewModel(IEnumerable<GrammarRule> items, IEnumerable<LL1FirstFollow> firstFollow)
+        public GrammarPanelViewModel(IEnumerable<LL1GrammarRule> rules, IEnumerable<LL1FirstFollow> firstFollow)
         {
-            Rules = new ObservableCollection<GrammarRule>(items);
-
-            Grammar = new LL1Grammar(firstFollow);
+            Grammar = new LL1Grammar(rules, firstFollow);
 
             var addEnabled = this.WhenAnyValue(
                 x => x.NewRule,
@@ -30,11 +28,11 @@ namespace GrammarTool.ViewModels
             //    x => (x.Rules.Count > 0));
 
             Add = ReactiveCommand.Create(
-                () => new GrammarRule(rule: NewRule),
+                () => new LL1GrammarRule(rule: NewRule),
                 addEnabled);
 
             Submit = ReactiveCommand.Create(
-                () => new LL1InputGrammar(Rules));
+                () => new LL1InputGrammar(Grammar._LL1Rules));
         }
 
         public string NewRule
@@ -43,13 +41,15 @@ namespace GrammarTool.ViewModels
             set => this.RaiseAndSetIfChanged(ref rule, value);
         }
 
-        public ObservableCollection<GrammarRule> Rules { get; }
-
         public LL1Grammar Grammar { get; }
+
+        public bool PaneOpen {
+            get => Grammar._LL1FirstFollow.Count > 0;
+        }
 
         //Source: https://docs.avaloniaui.net/tutorials/todo-list-app/adding-new-items
         //https://www.reactiveui.net/docs/handbook/commands/
-        public ReactiveCommand<Unit, GrammarRule> Add { get; }
+        public ReactiveCommand<Unit, LL1GrammarRule> Add { get; }
 
         public ReactiveCommand<Unit, LL1InputGrammar> Submit { get; }
     }

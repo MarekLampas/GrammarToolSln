@@ -34,7 +34,7 @@ namespace GrammarTool.Helpers
             _LL1InputGrammar = lL1InputGrammar;
         }
 
-        public IEnumerable<LL1FirstFollow> Compute(IEnumerable<GrammarRule> rules)
+        public IEnumerable<LL1FirstFollow> Compute(IEnumerable<LL1GrammarRule> rules)
         {
             List<LL1FirstFollow> lL1FirstFollow = new List<LL1FirstFollow>();
 
