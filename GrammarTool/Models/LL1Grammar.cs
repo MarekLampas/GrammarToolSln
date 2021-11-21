@@ -1,4 +1,7 @@
-﻿using GrammarTool.Helpers;
+﻿using Avalonia.Controls;
+using Avalonia.Data;
+using GrammarTool.ViewModels;
+using GrammarTool.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,6 +19,8 @@ namespace GrammarTool.Models
 
         public ObservableCollection<LL1FirstByProduction> _FirstSetByProduction { get; set; }
 
+        public LL1ParsingTable _LL1ParsingTable { get; set; }
+
         public LL1Grammar(IEnumerable<LL1GrammarRule> rules, IEnumerable<LL1FirstFollow> firstFollow)
         {
             _LL1Rules = new ObservableCollection<LL1GrammarRule>(rules);
@@ -29,6 +34,8 @@ namespace GrammarTool.Models
                     firstSetByProductionInit.Add(new LL1FirstByProduction(firstSetByProduction.Key, string.Join(", ", firstSetByProduction.Value)));
 
             _FirstSetByProduction = new ObservableCollection<LL1FirstByProduction>(firstSetByProductionInit);
+
+            _LL1ParsingTable = new LL1ParsingTable(_LL1FirstFollow);
         }
     }
 }

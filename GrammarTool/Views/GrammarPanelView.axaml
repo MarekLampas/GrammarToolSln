@@ -48,7 +48,6 @@
         </StackPanel>
       </DockPanel>
     </SplitView.Pane>
-
     <SplitView IsPaneOpen="{Binding PaneOpen}"
                DisplayMode="Inline"
                OpenPaneLength="350"
@@ -69,7 +68,7 @@
             <DataGrid Name="FirstByProductionSet" Items="{Binding Grammar._FirstSetByProduction}" AutoGenerateColumns="False" Margin="0 30 0 0" RowBackground="#252525" Background="#202020">
               <DataGrid.Columns>
                 <DataGridTextColumn Header="Production"  Binding="{Binding _Production}"/>
-                <DataGridTextColumn Header="Symbols" Binding="{Binding _SymbolsString}" />
+                <DataGridTextColumn Header="Symbols" Binding="{Binding _Symbols}" />
               </DataGrid.Columns>
             </DataGrid>
           </Grid>
@@ -84,11 +83,18 @@
           </Grid>
         </StackPanel>
       </SplitView.Pane>
-    <TextBlock Text="Parsing ressult"
-                 FontSize="24"
-                 VerticalAlignment="Top"
-                 HorizontalAlignment="Center"
-                 Margin="10"/>
+      <StackPanel>
+        <TextBlock Text="Parsing"
+                   FontSize="24"
+                   VerticalAlignment="Top"
+                   HorizontalAlignment="Center"
+                   Margin="0 10 0 0"/>
+        <Grid>
+          <TextBlock Margin="5 10 0 0" IsVisible="{Binding PaneOpen}">Parsing Table</TextBlock>
+          <DataGrid Name="ParsingTable" Margin="0 30 0 0" RowBackground="#252525" Background="#202020">
+          </DataGrid>
+        </Grid>
+      </StackPanel>
     </SplitView>
   </SplitView>
 </UserControl>

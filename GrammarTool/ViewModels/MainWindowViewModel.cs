@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Text;
 using System.Collections.ObjectModel;
+using GrammarTool.Views;
 
 namespace GrammarTool.ViewModels
 {
@@ -51,6 +52,8 @@ namespace GrammarTool.ViewModels
                 //Content = new GrammarPanelViewModel(Grammar.Rules, Grammar.Grammar._LL1FirstFollow);
                 CreateGrammar();
             });
+
+            GrammarPanelView.SetParsingTableForView(vm.Grammar._LL1ParsingTable._LL1TerminalToProductions);
 
             Content = vm;
         }
