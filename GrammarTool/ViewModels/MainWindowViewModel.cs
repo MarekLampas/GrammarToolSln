@@ -17,7 +17,7 @@ namespace GrammarTool.ViewModels
 
         public MainWindowViewModel(Database db)
         {
-            Grammar = new GrammarPanelViewModel(db.GetRules(), db.InicializeFirstFollow());
+            Grammar = new GrammarPanelViewModel(db.GetRules(), db.InicializeFirstFollow(), null, new LL1WordParsing(string.Empty));
 
             Content = new LandingPageViewModel();
         }
@@ -32,7 +32,8 @@ namespace GrammarTool.ViewModels
 
         public void CreateGrammar()
         {
-            var vm = new GrammarPanelViewModel(Grammar.Grammar._LL1Rules, Grammar.Grammar._LL1FirstFollow);
+            //TODO: parsing table will not be updated if rules get changed!
+            var vm = new GrammarPanelViewModel(Grammar.Grammar._LL1Rules, Grammar.Grammar._LL1FirstFollow, Grammar.Grammar._LL1ParsingTable, Grammar.Grammar._LL1WordParsing);
 
             vm.Add.Subscribe(model =>
             {
@@ -50,6 +51,20 @@ namespace GrammarTool.ViewModels
                 Grammar.Grammar._LL1FirstFollow = new ObservableCollection<LL1FirstFollow>(lL1ComputeFirstFollow.Compute(Grammar.Grammar._LL1Rules));
 
                 //Content = new GrammarPanelViewModel(Grammar.Rules, Grammar.Grammar._LL1FirstFollow);
+                CreateGrammar();
+            });
+
+            vm.Step.Subscribe(model =>
+            {
+                //TODO: first step should be just adding S to production
+                if (string.IsNullOrEmpty(Grammar.Grammar._LL1WordParsing._Word))
+                {
+                    Grammar.Grammar._LL1ParsingTable = ((GrammarPanelViewModel)Content).Grammar._LL1ParsingTable;
+                    Grammar.Grammar._LL1WordParsing = model;
+                }
+
+                Grammar.Grammar.DoParseStep();
+
                 CreateGrammar();
             });
 

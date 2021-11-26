@@ -25,7 +25,7 @@ namespace GrammarTool.Models
 
         public LL1InputGrammar _LL1InputGrammar;
 
-        public Dictionary<string, List<string>> _TerminalToProduction;
+        public Dictionary<string, HashSet<string>> _TerminalToProduction;
 
         public LL1FirstFollow(string nonTerminal, Dictionary<string, HashSet<string>> firstSetByProduction, HashSet<string> firstSet, HashSet<string> followSet, LL1InputGrammar inputLL1Grammar)
         {
@@ -61,22 +61,39 @@ namespace GrammarTool.Models
             File.AppendAllLines("first_follow.txt", new string[] { $"{ffol}" });
         }
 
-        private Dictionary<string, List<string>> ComputeTerminalToProduction()
+        private Dictionary<string, HashSet<string>> ComputeTerminalToProduction()
         {
-            Dictionary<string, List<string>> terminalToProduction = new Dictionary<string, List<string>>();
+            Dictionary<string, HashSet<string>> terminalToProduction = new Dictionary<string, HashSet<string>>();
 
             foreach (var terminal in _LL1InputGrammar._Terminals)
             {
-                terminalToProduction.Add(terminal, new List<string>());
+                terminalToProduction.Add(terminal, new HashSet<string>());
             }
 
-            terminalToProduction.Add(LL1InputGrammar._EMPTY_EXPANSION, new List<string>());
+            terminalToProduction.Add(LL1InputGrammar._EMPTY_EXPANSION, new HashSet<string>());
 
             foreach (var productionSet in _FirstSetByProduction)
             {
-                foreach (var symbol in productionSet.Value)
+                foreach (var symbolFirst in productionSet.Value)
                 {
-                    terminalToProduction[symbol].Add(productionSet.Key);
+                    if (symbolFirst == LL1InputGrammar._EMPTY_EXPANSION)
+                    {
+                        foreach (var symbolFollow in _FollowSet)
+                        {
+                            if (symbolFollow == LL1InputGrammar._END_STRING)
+                            {
+                                terminalToProduction[symbolFirst].Add(productionSet.Key);
+                            }
+                            else
+                            {
+                                terminalToProduction[symbolFollow].Add(productionSet.Key);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        terminalToProduction[symbolFirst].Add(productionSet.Key);
+                    }
                 }
             }
 

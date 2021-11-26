@@ -94,6 +94,28 @@
           <DataGrid Name="ParsingTable" Margin="0 30 0 0" RowBackground="#252525" Background="#202020">
           </DataGrid>
         </Grid>
+        <TextBox Grid.Row="0"
+                 Grid.Column="0"
+                 IsVisible="{Binding PaneOpen}"
+                 Text="{Binding NewWordToParse}"
+                 Watermark="Insert word to parse"
+                 HorizontalAlignment="Right"
+                 Width="350"/>
+        <Button Grid.Row="0"
+                Grid.Column="1"
+                IsVisible="{Binding PaneOpen}"
+                IsDefault="True"
+                HorizontalAlignment="Right"
+                Width="50"
+                Command="{Binding Step}">
+          Step
+        </Button>
+        <StackPanel IsVisible="{Binding WordInserted}">
+          <TextBlock>Parsing Metadata:</TextBlock>
+          <TextBlock Text="{Binding Grammar._LL1WordParsing._Word}"/>
+          <TextBlock Text="{Binding Grammar._LL1WordParsing._RemainingWord}"/>
+          <TextBlock Text="{Binding Grammar._LL1WordParsing._ParsingQueue}"/>
+        </StackPanel>
       </StackPanel>
     </SplitView>
   </SplitView>

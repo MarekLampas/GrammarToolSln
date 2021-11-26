@@ -15,9 +15,11 @@ namespace GrammarTool.ViewModels
     {
         string rule;
 
-        public GrammarPanelViewModel(IEnumerable<LL1GrammarRule> rules, IEnumerable<LL1FirstFollow> firstFollow)
+        string wordToParse;
+
+        public GrammarPanelViewModel(IEnumerable<LL1GrammarRule> rules, IEnumerable<LL1FirstFollow> firstFollow, LL1ParsingTable? lL1ParsingTable, LL1WordParsing lL1WordParsing)
         {
-            Grammar = new LL1Grammar(rules, firstFollow);
+            Grammar = new LL1Grammar(rules, firstFollow, lL1ParsingTable, lL1WordParsing);
 
             var addEnabled = this.WhenAnyValue(
                 x => x.NewRule,
@@ -27,12 +29,20 @@ namespace GrammarTool.ViewModels
             //    x => x.Rules,
             //    x => (x.Rules.Count > 0));
 
+            var stepEnabled = this.WhenAnyValue(
+                x => x.NewWordToParse,
+                x => !string.IsNullOrWhiteSpace(x));
+
             Add = ReactiveCommand.Create(
                 () => new LL1GrammarRule(rule: NewRule),
                 addEnabled);
 
             Submit = ReactiveCommand.Create(
                 () => new LL1InputGrammar(Grammar._LL1Rules));
+
+            Step = ReactiveCommand.Create(
+                () => new LL1WordParsing(word: NewWordToParse)/*,
+                stepEnabled*/);
         }
 
         public string NewRule
@@ -41,10 +51,22 @@ namespace GrammarTool.ViewModels
             set => this.RaiseAndSetIfChanged(ref rule, value);
         }
 
+        public string NewWordToParse
+        {
+            get => wordToParse;
+            set => this.RaiseAndSetIfChanged(ref wordToParse, value);
+        }
+
         public LL1Grammar Grammar { get; }
 
-        public bool PaneOpen {
+        public bool PaneOpen
+        {
             get => Grammar._LL1FirstFollow.Count > 0;
+        }
+
+        public bool WordInserted
+        {
+            get => !string.IsNullOrWhiteSpace(Grammar._LL1WordParsing._Word);
         }
 
         //Source: https://docs.avaloniaui.net/tutorials/todo-list-app/adding-new-items
@@ -52,5 +74,7 @@ namespace GrammarTool.ViewModels
         public ReactiveCommand<Unit, LL1GrammarRule> Add { get; }
 
         public ReactiveCommand<Unit, LL1InputGrammar> Submit { get; }
+
+        public ReactiveCommand<Unit, LL1WordParsing> Step { get; }
     }
 }

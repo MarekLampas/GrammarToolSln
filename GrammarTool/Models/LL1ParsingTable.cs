@@ -12,6 +12,8 @@ namespace GrammarTool.Models
         //TODO: try to use class instead of string array
         public ObservableCollection<string[]> _LL1TerminalToProductions { get; set; }
 
+        public Dictionary<string, Dictionary<string, HashSet<string>>> _ParsingTable;
+
         public LL1ParsingTable(ObservableCollection<LL1FirstFollow> LL1FirstFollow)
         {
             List<string[]> lL1TerminalToProductions = new List<string[]>();
@@ -26,6 +28,8 @@ namespace GrammarTool.Models
 
                 lL1TerminalToProductions.Add(row.ToArray());
 
+                _ParsingTable = new Dictionary<string, Dictionary<string, HashSet<string>>>();
+
                 foreach (var firstFollow in LL1FirstFollow)
                 {
                     row.Clear();
@@ -35,6 +39,15 @@ namespace GrammarTool.Models
                     row.AddRange(firstFollow._TerminalToProduction.Select(x => string.Join(", ", x.Value)).ToArray());
 
                     lL1TerminalToProductions.Add(row.ToArray());
+
+                    var parsingTable = new Dictionary<string, HashSet<string>>();
+
+                    foreach (var terminalToProduction in firstFollow._TerminalToProduction)
+                    {
+                        parsingTable.Add(terminalToProduction.Key, terminalToProduction.Value);
+                    }
+
+                    _ParsingTable.Add(firstFollow._NonTerminal, parsingTable);
                 }
             }
 

@@ -9,7 +9,8 @@ namespace GrammarTool.Views
 {
     public partial class GrammarPanelView : UserControl
     {
-        private static ObservableCollection<string[]> _ParsingTable;
+        private static ObservableCollection<string[]> _ParsingTable = new ObservableCollection<string[]>();
+
         public GrammarPanelView()
         {
             InitializeComponent();
