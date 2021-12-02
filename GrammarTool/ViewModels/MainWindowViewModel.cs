@@ -8,6 +8,7 @@ using System.Reactive.Linq;
 using System.Text;
 using System.Collections.ObjectModel;
 using GrammarTool.Views;
+using Avalonia.Media;
 
 namespace GrammarTool.ViewModels
 {
@@ -17,7 +18,7 @@ namespace GrammarTool.ViewModels
 
         public MainWindowViewModel(Database db)
         {
-            Grammar = new GrammarPanelViewModel(db.GetRules(), db.InicializeFirstFollow(), null, new LL1WordParsing(string.Empty));
+            Grammar = new GrammarPanelViewModel(db.GetRules(), db.InicializeFirstFollow(), null, new LL1WordParsing(string.Empty), new LL1ParsingTree());
 
             Content = new LandingPageViewModel();
         }
@@ -33,7 +34,7 @@ namespace GrammarTool.ViewModels
         public void CreateGrammar()
         {
             //TODO: parsing table will not be updated if rules get changed!
-            var vm = new GrammarPanelViewModel(Grammar.Grammar._LL1Rules, Grammar.Grammar._LL1FirstFollow, Grammar.Grammar._LL1ParsingTable, Grammar.Grammar._LL1WordParsing);
+            var vm = new GrammarPanelViewModel(Grammar.Grammar._LL1Rules, Grammar.Grammar._LL1FirstFollow, Grammar.Grammar._LL1ParsingTable, Grammar.Grammar._LL1WordParsing, Grammar.Grammar._LL1ParsingTree);
 
             vm.Add.Subscribe(model =>
             {
@@ -56,14 +57,20 @@ namespace GrammarTool.ViewModels
 
             vm.Step.Subscribe(model =>
             {
+                bool initialStep = false;
                 //TODO: first step should be just adding S to production
                 if (string.IsNullOrEmpty(Grammar.Grammar._LL1WordParsing._Word))
                 {
                     Grammar.Grammar._LL1ParsingTable = ((GrammarPanelViewModel)Content).Grammar._LL1ParsingTable;
                     Grammar.Grammar._LL1WordParsing = model;
+
+                    Grammar.Grammar._LL1ParsingTree.AddNode(LL1InputGrammar._STARTING_SYMBOL + "0", LL1InputGrammar._STARTING_SYMBOL, Brushes.LightGray);
+
+                    initialStep = true;
                 }
 
-                Grammar.Grammar.DoParseStep();
+                if(!initialStep)
+                    Grammar.Grammar.DoParseStep();
 
                 CreateGrammar();
             });

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using ReactiveUI;
 using System.Reactive;
 using GrammarTool.Helpers;
+using AvaloniaGraphControl;
 
 namespace GrammarTool.ViewModels
 {
@@ -17,9 +18,9 @@ namespace GrammarTool.ViewModels
 
         string wordToParse;
 
-        public GrammarPanelViewModel(IEnumerable<LL1GrammarRule> rules, IEnumerable<LL1FirstFollow> firstFollow, LL1ParsingTable? lL1ParsingTable, LL1WordParsing lL1WordParsing)
+        public GrammarPanelViewModel(IEnumerable<LL1GrammarRule> rules, IEnumerable<LL1FirstFollow> firstFollow, LL1ParsingTable? lL1ParsingTable, LL1WordParsing lL1WordParsing, LL1ParsingTree lL1ParsingTree)
         {
-            Grammar = new LL1Grammar(rules, firstFollow, lL1ParsingTable, lL1WordParsing);
+            Grammar = new LL1Grammar(rules, firstFollow, lL1ParsingTable, lL1WordParsing, lL1ParsingTree);
 
             var addEnabled = this.WhenAnyValue(
                 x => x.NewRule,

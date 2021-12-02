@@ -51,7 +51,7 @@ namespace GrammarTool.Models
             var hasFF = "Has FIRST-FIRST collision";
             var hasNotFF = "Doesn't have FIRST-FIRST collision";
             var ff = HasCollisionFirstFirst() ? hasFF : hasNotFF;
-
+            
             File.AppendAllLines("first_follow.txt", new string[] { $"{ff}" });
 
             var hasFFol = "Has FIRST-FOLLOW collision";

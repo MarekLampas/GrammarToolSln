@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Avalonia.Media;
 
 namespace GrammarTool.Models
 {
@@ -23,7 +24,9 @@ namespace GrammarTool.Models
 
         public LL1WordParsing _LL1WordParsing { get; set; }
 
-        public LL1Grammar(IEnumerable<LL1GrammarRule> rules, IEnumerable<LL1FirstFollow> firstFollow, LL1ParsingTable? lL1ParsingTable, LL1WordParsing lL1WordParsing)
+        public LL1ParsingTree _LL1ParsingTree { get; set; }
+
+        public LL1Grammar(IEnumerable<LL1GrammarRule> rules, IEnumerable<LL1FirstFollow> firstFollow, LL1ParsingTable? lL1ParsingTable, LL1WordParsing lL1WordParsing, LL1ParsingTree lL1ParsingTree)
         {
             _LL1Rules = new ObservableCollection<LL1GrammarRule>(rules);
 
@@ -54,6 +57,8 @@ namespace GrammarTool.Models
             }
 
             _LL1WordParsing = lL1WordParsing;
+
+            _LL1ParsingTree = lL1ParsingTree;
         }
 
         public void DoParseStep()
@@ -62,6 +67,10 @@ namespace GrammarTool.Models
             {
                 var nonTerminal = _LL1WordParsing.GetParsingQueueSymbol();
                 var terminal = _LL1WordParsing.GetRemaningWordSymbol();
+
+                if (terminal == LL1InputGrammar._END_STRING)
+                    terminal = LL1InputGrammar._EMPTY_EXPANSION;
+
                 var production = _LL1ParsingTable._ParsingTable[nonTerminal][terminal];
 
                 if (production.Count != 1)
@@ -78,7 +87,25 @@ namespace GrammarTool.Models
                 }
                 else
                 {
-                _LL1WordParsing.Expand(production.First());
+                    var actualNode = _LL1WordParsing.GetParsingQueuedTreeSymbol();
+
+                    _LL1WordParsing.Expand(production.First());
+
+                    var prod = production.First().Split("->")[1];
+                    var prodLength = prod.Count();
+                    for (int idx = 0; idx < prodLength; idx++)
+                    {
+                        var sym = prod[prodLength - idx - 1].ToString();
+                        var nodeId = sym + _LL1ParsingTree.Nodes.Count.ToString();
+
+                        if(sym != LL1InputGrammar._EMPTY_EXPANSION)
+                            _LL1WordParsing._ParsingQueuedTree.Add(nodeId);
+
+                        ISolidColorBrush background =_LL1FirstFollow[0]._LL1InputGrammar._NonTerminals.Contains(sym) ? Brushes.White : Brushes.LightSeaGreen;
+                        _LL1ParsingTree.AddNode(nodeId, sym, background);
+
+                        _LL1ParsingTree.AddEdge(actualNode, nodeId);
+                    }
                 }
             }
             else if (_LL1FirstFollow.First()._LL1InputGrammar._Terminals.Contains(_LL1WordParsing.GetParsingQueueSymbol()) || (_LL1WordParsing.GetParsingQueueSymbol() == LL1InputGrammar._END_STRING))

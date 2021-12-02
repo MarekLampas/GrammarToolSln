@@ -2,6 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:agc="clr-namespace:AvaloniaGraphControl;assembly=AvaloniaGraphControl"
+             xmlns:local="clr-namespace:GrammarTool;assembly=GrammarTool"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="500"
              x:Class="GrammarTool.Views.GrammarPanelView">
   <SplitView IsPaneOpen="True"
@@ -116,6 +118,19 @@
           <TextBlock Text="{Binding Grammar._LL1WordParsing._RemainingWord}"/>
           <TextBlock Text="{Binding Grammar._LL1WordParsing._ParsingQueue}"/>
         </StackPanel>
+        <agc:GraphPanel Graph="{Binding Grammar._LL1ParsingTree}" Zoom="1.2" LayoutMethod="SugiyamaScheme">
+          <agc:GraphPanel.DataTemplates>
+            <DataTemplate DataType="{x:Type local:StandardItem}">
+              <agc:TextSticker Text="{Binding Symbol}"
+                               Shape="Ellipse"
+                               Padding="30,10"
+                               Background="{Binding Background}"/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type local:ColoredEdge}">
+              <agc:Connection Brush="Aqua" />
+            </DataTemplate>
+          </agc:GraphPanel.DataTemplates>
+        </agc:GraphPanel>
       </StackPanel>
     </SplitView>
   </SplitView>
