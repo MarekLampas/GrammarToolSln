@@ -15,12 +15,51 @@
             Command="{Binding $parent[Window].DataContext.CreateGrammar}">
       Let's create grammar
     </Button>
-    <TextBlock FontStyle="Italic"
-               TextWrapping="WrapWithOverflow"
-               TextAlignment="Center"
-               HorizontalAlignment="Stretch"
-               VerticalAlignment="Center">
-      Welcome to grammar learning tool. Let's begin!
-    </TextBlock>
+    <ComboBox Name="SelectScanner"
+              DockPanel.Dock="Top"
+              HorizontalAlignment="Stretch"
+              HorizontalContentAlignment="Left"
+              Items="{Binding _Scanner}"
+              Background="Black"
+              SelectedIndex="{Binding _SelectedIndex}"
+              SelectedItem="{Binding _SelectedItem}">
+      <ComboBox.Styles>
+        <Style Selector="ComboBoxItem">
+          <Setter Property="Background" Value="Black" />
+        </Style>
+      </ComboBox.Styles>
+      <ComboBox.ItemTemplate>
+        <DataTemplate>
+          <TextBlock Text="{Binding _scannerName}"/>
+        </DataTemplate>
+      </ComboBox.ItemTemplate>
+    </ComboBox>
+    <ListBox Name="AllTokens" Items="{Binding _SelectedItem._tokenDefinitions}">
+      <ListBox.ItemsPanel>
+        <ItemsPanelTemplate>
+          <WrapPanel/>
+        </ItemsPanelTemplate>
+      </ListBox.ItemsPanel>
+      <ListBox.Styles>
+        <Style Selector="ListBoxItem">
+          <Setter Property="BorderThickness" Value="1" />
+          <Setter Property="BorderBrush" Value="WhiteSmoke" />
+        </Style>
+      </ListBox.Styles>
+      <ListBox.ItemTemplate>
+        <DataTemplate>
+          <WrapPanel>
+            <CheckBox IsChecked="{Binding _isChecked}">
+              <CheckBox.Content>
+                <MultiBinding StringFormat="{}{0} ({1})">
+                  <Binding Path="_returnsToken"/>
+                  <Binding Path="_regex"/>
+                </MultiBinding>
+              </CheckBox.Content>
+            </CheckBox>
+          </WrapPanel>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
   </DockPanel>
 </UserControl>
