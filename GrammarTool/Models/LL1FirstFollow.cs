@@ -23,11 +23,11 @@ namespace GrammarTool.Models
 
         public string _FollowSetString { get; set; }
 
-        public LL1InputGrammar _LL1InputGrammar;
+        public readonly Symbols _Symbols;
 
         public Dictionary<string, HashSet<string>> _TerminalToProduction;
 
-        public LL1FirstFollow(string nonTerminal, Dictionary<string, HashSet<string>> firstSetByProduction, HashSet<string> firstSet, HashSet<string> followSet, LL1InputGrammar inputLL1Grammar)
+        public LL1FirstFollow(string nonTerminal, Dictionary<string, HashSet<string>> firstSetByProduction, HashSet<string> firstSet, HashSet<string> followSet, Symbols symbols)
         {
             _NonTerminal = nonTerminal;
 
@@ -41,7 +41,7 @@ namespace GrammarTool.Models
 
             _FollowSetString = string.Join(", ", _FollowSet);
 
-            _LL1InputGrammar = inputLL1Grammar;
+            _Symbols = symbols;
 
             _TerminalToProduction = ComputeTerminalToProduction();
 
@@ -65,12 +65,15 @@ namespace GrammarTool.Models
         {
             Dictionary<string, HashSet<string>> terminalToProduction = new Dictionary<string, HashSet<string>>();
 
-            foreach (var terminal in _LL1InputGrammar._Terminals)
+            foreach (var terminal in _Symbols._TokensUsed)
             {
                 terminalToProduction.Add(terminal, new HashSet<string>());
             }
 
-            terminalToProduction.Add(LL1InputGrammar._EMPTY_EXPANSION, new HashSet<string>());
+            if (!terminalToProduction.ContainsKey(LL1InputGrammar._EMPTY_EXPANSION))
+            {
+                terminalToProduction.Add(LL1InputGrammar._EMPTY_EXPANSION, new HashSet<string>());
+            }
 
             foreach (var productionSet in _FirstSetByProduction)
             {

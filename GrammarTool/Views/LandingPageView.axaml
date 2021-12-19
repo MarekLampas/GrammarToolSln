@@ -15,6 +15,13 @@
             Command="{Binding $parent[Window].DataContext.CreateGrammar}">
       Let's create grammar
     </Button>
+    <TextBox DockPanel.Dock="Bottom"
+             AcceptsReturn="True"
+             TextWrapping="Wrap"
+             Text="{Binding _InputText}"
+             Watermark="Insert block of code here"
+             Height="200"
+             ScrollViewer.VerticalScrollBarVisibility="Auto"/>
     <ComboBox Name="SelectScanner"
               DockPanel.Dock="Top"
               HorizontalAlignment="Stretch"

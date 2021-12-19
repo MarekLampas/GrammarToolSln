@@ -21,9 +21,9 @@ namespace GrammarTool.Models
         {
             _Word = word;
 
-            _RemainingWord = word + LL1InputGrammar._END_STRING;
+            _RemainingWord = word + " " + LL1InputGrammar._END_STRING;
 
-            _ParsingQueue = LL1InputGrammar._STARTING_SYMBOL + LL1InputGrammar._END_STRING;
+            _ParsingQueue = LL1InputGrammar._STARTING_SYMBOL + " " + LL1InputGrammar._END_STRING;
 
             _ParsingQueuedTree = new List<string>();
 
@@ -32,30 +32,30 @@ namespace GrammarTool.Models
 
         public void Consume()
         {
-            _RemainingWord = _RemainingWord.Substring(1);
+            _RemainingWord = string.Join(" ",_RemainingWord.Split(" ").Skip(1));
 
-            _ParsingQueue = _ParsingQueue.Substring(1);
+            _ParsingQueue = string.Join(" ", _ParsingQueue.Split(" ").Skip(1));
 
             _ParsingQueuedTree.RemoveAt(_ParsingQueuedTree.Count - 1);
         }
 
         public void Expand(string production)
         {
-            var productionStripped = production.Split("->")[1];
+            var productionStripped = production.Split("->")[1].Trim();
 
-            _ParsingQueue = productionStripped == LL1InputGrammar._EMPTY_EXPANSION ? _ParsingQueue.Substring(1) : productionStripped + _ParsingQueue.Substring(1);
+            _ParsingQueue = productionStripped == LL1InputGrammar._EMPTY_EXPANSION ?  string.Join(" ", _ParsingQueue.Split(" ").Skip(1)) : productionStripped + " " + string.Join(" ", _ParsingQueue.Split(" ").Skip(1));
 
             _ParsingQueuedTree.RemoveAt(_ParsingQueuedTree.Count - 1);
         }
 
         public string GetRemaningWordSymbol()
         {
-            return _RemainingWord.Substring(0, 1);
+            return _RemainingWord.Split(" ")[0].Trim();
         }
 
         public string GetParsingQueueSymbol()
         {
-            return _ParsingQueue.Substring(0, 1);
+            return _ParsingQueue.Split(" ")[0].Trim();
         }
 
         public string GetParsingQueuedTreeSymbol()

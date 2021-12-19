@@ -14,6 +14,8 @@ namespace GrammarTool.Models
 {
     public class LL1Grammar
     {
+        public Symbols _Symbols { get; }
+
         public ObservableCollection<LL1GrammarRule> _LL1Rules { get; }
 
         public ObservableCollection<LL1FirstFollow> _LL1FirstFollow { get; set; }
@@ -26,8 +28,11 @@ namespace GrammarTool.Models
 
         public LL1ParsingTree _LL1ParsingTree { get; set; }
 
-        public LL1Grammar(IEnumerable<LL1GrammarRule> rules, IEnumerable<LL1FirstFollow> firstFollow, LL1ParsingTable? lL1ParsingTable, LL1WordParsing lL1WordParsing, LL1ParsingTree lL1ParsingTree)
+        public LL1Grammar(Symbols symbols, IEnumerable<LL1GrammarRule> rules, IEnumerable<LL1FirstFollow> firstFollow, LL1ParsingTable? lL1ParsingTable, LL1WordParsing lL1WordParsing, LL1ParsingTree lL1ParsingTree)
         {
+            _Symbols = symbols;
+
+            //TODO: verify if rules do not contains multiple whitespaces in a row and get rid of all Trim() random in code
             _LL1Rules = new ObservableCollection<LL1GrammarRule>(rules);
 
             _LL1FirstFollow = new ObservableCollection<LL1FirstFollow>(firstFollow);
@@ -63,7 +68,7 @@ namespace GrammarTool.Models
 
         public void DoParseStep()
         {
-            if (_LL1FirstFollow.First()._LL1InputGrammar._NonTerminals.Contains(_LL1WordParsing.GetParsingQueueSymbol()))
+            if (_Symbols._NonTerminals.Contains(_LL1WordParsing.GetParsingQueueSymbol()))
             {
                 var nonTerminal = _LL1WordParsing.GetParsingQueueSymbol();
                 var terminal = _LL1WordParsing.GetRemaningWordSymbol();
@@ -91,24 +96,24 @@ namespace GrammarTool.Models
 
                     _LL1WordParsing.Expand(production.First());
 
-                    var prod = production.First().Split("->")[1];
-                    var prodLength = prod.Count();
-                    for (int idx = 0; idx < prodLength; idx++)
+                    var prod = production.First().Split("->")[1].Trim();
+                    var prodSplitted = prod.Split(" ");
+                    for (int idx = 0; idx < prodSplitted.Length; idx++)
                     {
-                        var sym = prod[prodLength - idx - 1].ToString();
+                        var sym = prodSplitted[prodSplitted.Length - idx - 1];
                         var nodeId = sym + _LL1ParsingTree.Nodes.Count.ToString();
 
                         if(sym != LL1InputGrammar._EMPTY_EXPANSION)
                             _LL1WordParsing._ParsingQueuedTree.Add(nodeId);
 
-                        ISolidColorBrush background =_LL1FirstFollow[0]._LL1InputGrammar._NonTerminals.Contains(sym) ? Brushes.White : Brushes.LightSeaGreen;
+                        ISolidColorBrush background = _Symbols._NonTerminals.Contains(sym) ? Brushes.White : Brushes.LightSeaGreen;
                         _LL1ParsingTree.AddNode(nodeId, sym, background);
 
                         _LL1ParsingTree.AddEdge(actualNode, nodeId);
                     }
                 }
             }
-            else if (_LL1FirstFollow.First()._LL1InputGrammar._Terminals.Contains(_LL1WordParsing.GetParsingQueueSymbol()) || (_LL1WordParsing.GetParsingQueueSymbol() == LL1InputGrammar._END_STRING))
+            else if (_Symbols._Terminals.Contains(_LL1WordParsing.GetParsingQueueSymbol()) || (_LL1WordParsing.GetParsingQueueSymbol() == LL1InputGrammar._END_STRING))
             {
                 var terminalWord = _LL1WordParsing.GetRemaningWordSymbol();
                 var terminalQueue = _LL1WordParsing.GetParsingQueueSymbol();

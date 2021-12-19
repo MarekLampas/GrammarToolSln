@@ -10,6 +10,9 @@ namespace GrammarTool.Helpers
 {
     public class LL1ComputeFirstFollow
     {
+        public readonly Symbols _Symbols;
+
+        public readonly LL1InputGrammar _LL1InputGrammar;
 
         public Dictionary<string, HashSet<string>> _First;
 
@@ -17,53 +20,38 @@ namespace GrammarTool.Helpers
 
         public Dictionary<string, HashSet<string>> _Follow;
 
-        Dictionary<string, List<string>> _NonTerminalToRules;
-
-        LL1InputGrammar _LL1InputGrammar;
-
-        public LL1ComputeFirstFollow(LL1InputGrammar lL1InputGrammar)
+        public LL1ComputeFirstFollow(Symbols symbols, LL1InputGrammar lL1InputGrammar)
         {
+            _Symbols = symbols;
+
+            _LL1InputGrammar = lL1InputGrammar;
+
             _First = new Dictionary<string, HashSet<string>>();
 
             _FirstByRule = new Dictionary<string, HashSet<string>>();
 
             _Follow = new Dictionary<string, HashSet<string>>();
-
-            _NonTerminalToRules = new Dictionary<string, List<string>>();
-
-            _LL1InputGrammar = lL1InputGrammar;
         }
 
         public IEnumerable<LL1FirstFollow> Compute(IEnumerable<LL1GrammarRule> rules)
         {
             List<LL1FirstFollow> lL1FirstFollow = new List<LL1FirstFollow>();
 
-            foreach (var nonTerminal in _LL1InputGrammar._NonTerminals)
+            foreach (var nonTerminal in _Symbols._NonTerminals)
             {
                 _First.Add(nonTerminal, new HashSet<string>());
                 _Follow.Add(nonTerminal, new HashSet<string>());
             }
 
-            foreach (var rule in rules)
+            foreach (var nonTerminalRules in _LL1InputGrammar._ProductionDict)
             {
-                var individualRules = new List<string>() { rule.Rule };
+                var individualRules = new List<string>();
 
-                if (!_NonTerminalToRules.ContainsKey(rule.Rule.Substring(0, 1)))
-                {
-                    _NonTerminalToRules.Add(rule.Rule.Substring(0, 1), new List<string>());
-                }
+                individualRules.AddRange(nonTerminalRules.Value.Select(x => $"{nonTerminalRules.Key} -> {x}"));
 
-                if (rule.Rule.Contains('/'))
-                {
-                    var nonTerminalToProductions = rule.Rule.Split("->");
-                    
-                    individualRules = nonTerminalToProductions[1].Split('/').Select(x => $"{nonTerminalToProductions[0]}->{x}").ToList();
-                }
                 foreach (var individualRule in individualRules)
                 {
                     _FirstByRule.Add(individualRule, new HashSet<string>());
-
-                    _NonTerminalToRules[individualRule.Substring(0, 1)].Add(individualRule);
                 }
             }
 
@@ -96,7 +84,7 @@ namespace GrammarTool.Helpers
             {
                 Dictionary<string, HashSet<string>> _followOld = new Dictionary<string, HashSet<string>>();
 
-                foreach (var nonTerminal in _LL1InputGrammar._NonTerminals)
+                foreach (var nonTerminal in _Symbols._NonTerminals)
                 {
                     _followOld.Add(nonTerminal, _Follow[nonTerminal].Select(x => x).ToHashSet());
                 }
@@ -118,19 +106,19 @@ namespace GrammarTool.Helpers
                     break;
             }
 
-            foreach(var nonTerminal in _LL1InputGrammar._NonTerminals)
+            foreach(var nonTerminal in _Symbols._NonTerminals)
             {
                 Dictionary<string, HashSet<string>> _FirstByRuleOfNonTerminal = new Dictionary<string, HashSet<string>>();
 
                 foreach(var firstByRule in _FirstByRule)
                 {
-                    if (_NonTerminalToRules[nonTerminal].Contains(firstByRule.Key))
+                    if (_LL1InputGrammar._ProductionDict[nonTerminal].Contains(firstByRule.Key.Split("->")[1].Trim()))
                     {
                         _FirstByRuleOfNonTerminal.Add(firstByRule.Key, firstByRule.Value);
                     }
                 }
 
-                lL1FirstFollow.Add(new LL1FirstFollow(nonTerminal, _FirstByRuleOfNonTerminal, _First[nonTerminal], _Follow[nonTerminal], _LL1InputGrammar));
+                lL1FirstFollow.Add(new LL1FirstFollow(nonTerminal, _FirstByRuleOfNonTerminal, _First[nonTerminal], _Follow[nonTerminal], _Symbols));
             }
 
             return lL1FirstFollow;
@@ -144,11 +132,15 @@ namespace GrammarTool.Helpers
         {
             var ruleSplitted = rule.Split("->");
             
-            var nonTerminal = ruleSplitted[0];
+            var nonTerminal = ruleSplitted[0].Trim();
             
-            var production = ruleSplitted[1];
+            var productionSplitted = ruleSplitted[1].Trim().Split(" ");
 
-            var first = FirstOfSymbol(production.Substring(0, 1), production.Substring(1));
+            var symbol = productionSplitted[0].Trim();
+
+            var remainingProduction = string.Join(" ", productionSplitted.Skip(1)).Trim();
+
+            var first = FirstOfSymbol(symbol, remainingProduction);
             
             _FirstByRule[rule].UnionWith(first);
             
@@ -159,17 +151,23 @@ namespace GrammarTool.Helpers
         {
             HashSet<string> first = new HashSet<string>();
 
-            if (_LL1InputGrammar._Terminals.Contains(symbol))
+            if (_Symbols._Terminals.Contains(symbol))
             {
                 first.Add(symbol);
             }
-            else if (_LL1InputGrammar._NonTerminals.Contains(symbol))
+            else if (_Symbols._NonTerminals.Contains(symbol))
             {
                 foreach (var sym in _First[symbol])
                 {
                     if (sym == LL1InputGrammar._EMPTY_EXPANSION)
                     {
-                        first.UnionWith(FirstOfSymbol(remainingProduction.Substring(0, 1), remainingProduction.Substring(1)));
+                        var productionSplitted = remainingProduction.Split(" ");
+
+                        var nextSymbol = productionSplitted[0].Trim();
+
+                        var nextRemainingProduction = string.Join(" ", productionSplitted.Skip(1)).Trim();
+
+                        first.UnionWith(FirstOfSymbol(nextSymbol, nextRemainingProduction));
                     }
                     else
                     {
@@ -191,17 +189,19 @@ namespace GrammarTool.Helpers
         {
             var ruleSplitted = rule.Split("->");
             
-            var nonTerminal = ruleSplitted[0];
-            
-            var production = ruleSplitted[1];
+            var nonTerminal = ruleSplitted[0].Trim();
 
-            for (int i = 0; i < production.Length; i++)
+            var productionSplitted = ruleSplitted[1].Trim().Split(" ");
+
+            for (int i = 0; i < productionSplitted.Count(); i++)
             {
-                var symbol = production.Substring(i, 1);
+                var symbol = productionSplitted[i];
 
-                if (_LL1InputGrammar._NonTerminals.Contains(symbol))
+                var remainingProduction = productionSplitted.Count() == i ? string.Empty: string.Join(" ", productionSplitted.Skip(i + 1)).Trim();
+
+                if (_Symbols._NonTerminals.Contains(symbol))
                 {
-                    _Follow[symbol].UnionWith(FollowOfSymbol(nonTerminal, production.Substring(i + 1)));
+                    _Follow[symbol].UnionWith(FollowOfSymbol(nonTerminal, remainingProduction));
                 }
             }
         }
@@ -218,20 +218,20 @@ namespace GrammarTool.Helpers
             }
             else
             {
-                nextSymbol = remainingProduction.Substring(0, 1);
+                nextSymbol = remainingProduction.Split(" ")[0];
             }
 
-            if (_LL1InputGrammar._Terminals.Contains(nextSymbol))
+            if (_Symbols._Terminals.Contains(nextSymbol))
             {
                 follow.Add(nextSymbol);
             }
-            else if (_LL1InputGrammar._NonTerminals.Contains(nextSymbol))
+            else if (_Symbols._NonTerminals.Contains(nextSymbol))
             {
                 foreach (var sym in _First[nextSymbol])
                 {
                     if (sym == LL1InputGrammar._EMPTY_EXPANSION)
                     {
-                        follow.UnionWith(FollowOfSymbol(nonTerminal, remainingProduction.Substring(1)));
+                        follow.UnionWith(FollowOfSymbol(nonTerminal, string.Join(" ", remainingProduction.Split(" ").Skip(1))));
                     }
                     else
                     {

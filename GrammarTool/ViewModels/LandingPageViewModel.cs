@@ -23,6 +23,16 @@ namespace GrammarTool.ViewModels
             set => this.RaiseAndSetIfChanged(ref _selectedItem, value);
         }
 
+        public string _inputText;
+
+        public string _InputText
+        {
+            get => _inputText;
+            set => this.RaiseAndSetIfChanged(ref _inputText, value);
+        }
+
+        public string _InputTextTokenized { get; set; }
+
         public LandingPageViewModel()
         {
             //TODO:instead of this list load all scanners saved on drive - json or xml with node Name and list node tokens definitions saved under uniqeue filename

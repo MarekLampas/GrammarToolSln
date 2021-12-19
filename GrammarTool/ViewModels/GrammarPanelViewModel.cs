@@ -16,11 +16,20 @@ namespace GrammarTool.ViewModels
     {
         string rule;
 
+        //TODO: Delete - use InputTextTokenized instead
         string wordToParse;
 
-        public GrammarPanelViewModel(IEnumerable<LL1GrammarRule> rules, IEnumerable<LL1FirstFollow> firstFollow, LL1ParsingTable? lL1ParsingTable, LL1WordParsing lL1WordParsing, LL1ParsingTree lL1ParsingTree)
+        public string InputText { get; set; }
+
+        public string InputTextTokenized { get; set; }
+
+        public GrammarPanelViewModel(Symbols symbols, string inputText, string inputTextTokenized, IEnumerable<LL1GrammarRule> rules, IEnumerable<LL1FirstFollow> firstFollow, LL1ParsingTable? lL1ParsingTable, LL1WordParsing lL1WordParsing, LL1ParsingTree lL1ParsingTree)
         {
-            Grammar = new LL1Grammar(rules, firstFollow, lL1ParsingTable, lL1WordParsing, lL1ParsingTree);
+            InputText = inputText;
+
+            InputTextTokenized = inputTextTokenized;
+
+            Grammar = new LL1Grammar(symbols, rules, firstFollow, lL1ParsingTable, lL1WordParsing, lL1ParsingTree);
 
             var addEnabled = this.WhenAnyValue(
                 x => x.NewRule,
@@ -39,7 +48,7 @@ namespace GrammarTool.ViewModels
                 addEnabled);
 
             Submit = ReactiveCommand.Create(
-                () => new LL1InputGrammar(Grammar._LL1Rules));
+                () => new LL1InputGrammar(Grammar._Symbols, Grammar._LL1Rules));
 
             Step = ReactiveCommand.Create(
                 () => new LL1WordParsing(word: NewWordToParse)/*,
