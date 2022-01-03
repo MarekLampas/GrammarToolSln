@@ -6,8 +6,10 @@ namespace GrammarTool.Views
 {
     public partial class MainWindowView : Window
     {
+        public static MainWindowView Instance { get; private set; }
         public MainWindowView()
         {
+            Instance = this;
             InitializeComponent();
 #if DEBUG
             this.AttachDevTools();

@@ -112,7 +112,7 @@ namespace GrammarTool.Helpers
 
                 foreach(var firstByRule in _FirstByRule)
                 {
-                    if (_LL1InputGrammar._ProductionDict[nonTerminal].Contains(firstByRule.Key.Split("->")[1].Trim()))
+                    if (_LL1InputGrammar._ProductionDict[nonTerminal].Contains(firstByRule.Key.Split("->")[1].Trim()) && (firstByRule.Key.Split("->")[0].Trim() == nonTerminal))
                     {
                         _FirstByRuleOfNonTerminal.Add(firstByRule.Key, firstByRule.Value);
                     }

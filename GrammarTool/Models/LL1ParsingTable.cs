@@ -36,7 +36,7 @@ namespace GrammarTool.Models
 
                     row.Add(firstFollow._NonTerminal);
 
-                    row.AddRange(firstFollow._TerminalToProduction.Select(x => string.Join(", ", x.Value)).ToArray());
+                    row.AddRange(firstFollow._TerminalToProduction.Select(x => string.Join(", ", x.Value.Select(y => y.Split("->")[1].Trim()))).ToArray());
 
                     lL1TerminalToProductions.Add(row.ToArray());
 

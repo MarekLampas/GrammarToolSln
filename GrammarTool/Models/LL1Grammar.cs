@@ -16,7 +16,7 @@ namespace GrammarTool.Models
     {
         public Symbols _Symbols { get; }
 
-        public ObservableCollection<LL1GrammarRule> _LL1Rules { get; }
+        public ObservableCollection<LL1GrammarRule> _LL1Rules { get; set; }
 
         public ObservableCollection<LL1FirstFollow> _LL1FirstFollow { get; set; }
 
@@ -81,13 +81,20 @@ namespace GrammarTool.Models
                 if (production.Count != 1)
                 {
                     var productionEmpty = _LL1ParsingTable._ParsingTable[nonTerminal][LL1InputGrammar._EMPTY_EXPANSION];
-                    if (productionEmpty.Count != 1)
+                    if (production.Count > 1)
                     {
-                        throw new Exception($"Parsing table cell ({nonTerminal}, {terminal}) does not contains exact one production.");
+                        throw new Exception($"Parsing table cell ({nonTerminal}, {terminal}) does not contain exact one production.");
                     }
                     else
                     {
-                        _LL1WordParsing.Expand(productionEmpty.First());
+                        if (productionEmpty.Count != 1)
+                        {
+                            throw new Exception($"Parsing table cell ({nonTerminal}, {terminal}) neiter cell ({nonTerminal}, {LL1InputGrammar._EMPTY_EXPANSION}) does contain exact one production.");
+                        }
+                        else
+                        {
+                            _LL1WordParsing.Expand(productionEmpty.First());
+                        }
                     }
                 }
                 else

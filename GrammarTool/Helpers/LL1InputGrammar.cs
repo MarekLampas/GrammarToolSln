@@ -66,7 +66,7 @@ namespace GrammarTool.Helpers
                         {
                             if (_Symbols._Terminals.Contains(symbol))
                             {
-                                throw new Exception($"Production left side contains symbol '{symbol}', but it's not used terminal or non terminal! But scanner terminals contains it!");
+                                //throw new Exception($"Production left side contains symbol '{symbol}', but it's not used terminal or non terminal! But scanner terminals contains it!");
                             }
                             else
                             {

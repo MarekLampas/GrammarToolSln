@@ -11,7 +11,7 @@
              OpenPaneLength="250">
     <SplitView.Pane>
       <DockPanel>
-        <TextBlock Text="Grammar"
+        <TextBlock Text="Terminals used"
                    FontSize="24"
                    DockPanel.Dock="Top"
                    HorizontalAlignment="Center"
@@ -19,87 +19,31 @@
         <Button DockPanel.Dock="Bottom"
                 HorizontalAlignment="Stretch"
                 HorizontalContentAlignment="Center"
-                Command="{Binding Submit}">
+                Command="{Binding Save}"
+                Background="DarkBlue">
+          Save
+        </Button>
+        <Button DockPanel.Dock="Bottom"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Center"
+                Command="{Binding Submit}"
+                IsVisible="{Binding !StepEnabled}">
           Submit
         </Button>
-        <StackPanel Spacing="5">
-          <ItemsControl Items="{Binding Grammar._LL1Rules}">
-            <ItemsControl.ItemTemplate>
-              <DataTemplate>
-                <TextBlock Margin="15 5 0 0"
-                           Text="{Binding Rule}"/>
-              </DataTemplate>
-            </ItemsControl.ItemTemplate>
-          </ItemsControl>
-          <Grid RowDefinitions="Auto,Auto,Auto">
-            <TextBox Grid.Row="0"
-                     Grid.Column="0"
-                     Text="{Binding NewRule}"
-                     Watermark="Insert Rule (e.g., A -> aA)"
-                     HorizontalAlignment="Left"
-                     Width="200"/>
-            <Button Grid.Row="0"
-                    Grid.Column="1"
-                    IsDefault="True"
-                    HorizontalAlignment="Right"
-                    Width="50"
-                    Command="{Binding Add}">
-              Add
-            </Button>
-          </Grid>
-        </StackPanel>
-      </DockPanel>
-    </SplitView.Pane>
-    <SplitView IsPaneOpen="{Binding PaneOpen}"
-               DisplayMode="Inline"
-               OpenPaneLength="350"
-               PaneBackground="#111">
-      <SplitView.Pane>
+        <Button DockPanel.Dock="Bottom"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Center"
+                IsDefault="True"
+                Command="{Binding Step}"
+                IsVisible="{Binding StepEnabled}">
+          Step
+        </Button>
         <StackPanel>
-          <Grid>
-            <TextBlock Foreground="Aqua" Margin="5 15 0 0">First Set</TextBlock>
-            <DataGrid Name="FirstSet" Items="{Binding Grammar._LL1FirstFollow}" AutoGenerateColumns="False" Margin="0 30 0 0" RowBackground="#252525" Background="#202020">
-              <DataGrid.Columns>
-                <DataGridTextColumn Header="Non Terminal"  Binding="{Binding _NonTerminal}"/>
-                <DataGridTextColumn Header="Symbols" Binding="{Binding _FirstSetString}" />
-              </DataGrid.Columns>
-            </DataGrid>
-          </Grid>
-          <Grid>
-            <TextBlock Margin="5 15 0 0">First Set By Production</TextBlock>
-            <DataGrid Name="FirstByProductionSet" Items="{Binding Grammar._FirstSetByProduction}" AutoGenerateColumns="False" Margin="0 30 0 0" RowBackground="#252525" Background="#202020">
-              <DataGrid.Columns>
-                <DataGridTextColumn Header="Production"  Binding="{Binding _Production}"/>
-                <DataGridTextColumn Header="Symbols" Binding="{Binding _Symbols}" />
-              </DataGrid.Columns>
-            </DataGrid>
-          </Grid>
-          <Grid>
-            <TextBlock Margin="5 15 0 0">Follow Set</TextBlock>
-            <DataGrid Name="FollowSet" Items="{Binding Grammar._LL1FirstFollow}" AutoGenerateColumns="False" Margin="0 30 0 0" RowBackground="#252525" Background="#202020">
-              <DataGrid.Columns>
-                <DataGridTextColumn Header="Non Terminal"  Binding="{Binding _NonTerminal}"/>
-                <DataGridTextColumn Header="Symbols" Binding="{Binding _FollowSetString}" />
-              </DataGrid.Columns>
-            </DataGrid>
-          </Grid>
-        </StackPanel>
-      </SplitView.Pane>
-      <StackPanel>
-        <TextBlock Text="Parsing"
-                   FontSize="24"
-                   VerticalAlignment="Top"
-                   HorizontalAlignment="Center"
-                   Margin="0 10 0 0"/>
-        <DockPanel>
-          <TextBlock IsVisible="{Binding !PaneOpen}">Tokens used</TextBlock>
-        </DockPanel>
-        <DockPanel>
           <ListBox Items="{Binding Grammar._Symbols._TokensUsed}"
                    DockPanel.Dock="Left"
                    IsVisible="{Binding !PaneOpen}"
-                   Width="250"
-                   Height="615"
+                   MaxHeight="600"
+                   HorizontalAlignment="Stretch"
                    Margin="0 10 0 0"
                    ScrollViewer.VerticalScrollBarVisibility="Visible">
             <ListBox.ItemTemplate>
@@ -108,7 +52,94 @@
               </DataTemplate>
             </ListBox.ItemTemplate>
           </ListBox>
-          <TextBlock Margin="0 20 0 0" DockPanel.Dock="Top" IsVisible="{Binding !PaneOpen}">Input text</TextBlock>
+        </StackPanel>
+      </DockPanel>
+    </SplitView.Pane>
+    <SplitView IsPaneOpen="{Binding !WordInserted}"
+               DisplayMode="Inline"
+               OpenPaneLength="450"
+               PaneBackground="#111">
+      <SplitView.Pane>
+        <DockPanel>
+          <ScrollViewer IsTabStop="True">
+            <StackPanel>
+              <DockPanel IsVisible="{Binding PaneClosedNoWordInserted}">
+                <TextBlock IsVisible="{Binding !PaneOpen}">Grammar</TextBlock>
+              </DockPanel>
+              <DockPanel IsVisible="{Binding PaneClosedNoWordInserted}">
+                <StackPanel Spacing="5">
+
+                  <ListBox Items="{Binding Grammar._LL1Rules}"
+                       DockPanel.Dock="Left"
+                       MaxHeight="600"
+                       HorizontalAlignment="Stretch"
+                       Margin="0 10 0 0"
+                       ScrollViewer.VerticalScrollBarVisibility="Auto"
+                       ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                    <ListBox.ItemTemplate>
+                      <DataTemplate>
+                        <TextBlock Text="{Binding Rule}"/>
+                      </DataTemplate>
+                    </ListBox.ItemTemplate>
+                  </ListBox>
+
+                  <Grid RowDefinitions="Auto,Auto,Auto">
+                    <TextBox Grid.Row="0"
+                             Grid.Column="0"
+                             Text="{Binding NewRule}"
+                             Watermark="Insert Rule (e.g., A -> aA)"
+                             HorizontalAlignment="Left"
+                             Width="400"/>
+                    <Button Grid.Row="0"
+                            Grid.Column="1"
+                            IsDefault="True"
+                            HorizontalAlignment="Right"
+                            Width="50"
+                            Command="{Binding Add}">
+                      Add
+                    </Button>
+                  </Grid>
+                </StackPanel>
+              </DockPanel>
+              <Grid IsVisible="{Binding PaneOpenNoWordInserted}">
+                <TextBlock Foreground="Aqua" Margin="5 15 0 0">First Set</TextBlock>
+                <DataGrid Name="FirstSet" Items="{Binding Grammar._LL1FirstFollow}" AutoGenerateColumns="False" Margin="0 30 0 0" RowBackground="#252525" Background="#202020">
+                  <DataGrid.Columns>
+                    <DataGridTextColumn Header="Non Terminal"  Binding="{Binding _NonTerminal}"/>
+                    <DataGridTextColumn Header="Symbols" Binding="{Binding _FirstSetString}" />
+                  </DataGrid.Columns>
+                </DataGrid>
+              </Grid>
+              <Grid IsVisible="{Binding PaneOpenNoWordInserted}">
+                <TextBlock Margin="5 15 0 0">First Set By Production</TextBlock>
+                <DataGrid Name="FirstByProductionSet" Items="{Binding Grammar._FirstSetByProduction}" AutoGenerateColumns="False" Margin="0 30 0 0" RowBackground="#252525" Background="#202020">
+                  <DataGrid.Columns>
+                    <DataGridTextColumn Header="Production"  Binding="{Binding _Production}"/>
+                    <DataGridTextColumn Header="Symbols" Binding="{Binding _Symbols}" />
+                  </DataGrid.Columns>
+                </DataGrid>
+              </Grid>
+              <Grid IsVisible="{Binding PaneOpenNoWordInserted}">
+                <TextBlock Margin="5 15 0 0">Follow Set</TextBlock>
+                <DataGrid Name="FollowSet" Items="{Binding Grammar._LL1FirstFollow}" AutoGenerateColumns="False" Margin="0 30 0 0" RowBackground="#252525" Background="#202020">
+                  <DataGrid.Columns>
+                    <DataGridTextColumn Header="Non Terminal"  Binding="{Binding _NonTerminal}"/>
+                    <DataGridTextColumn Header="Symbols" Binding="{Binding _FollowSetString}" />
+                  </DataGrid.Columns>
+                </DataGrid>
+              </Grid>
+            </StackPanel>
+          </ScrollViewer>
+        </DockPanel>
+      </SplitView.Pane>
+      <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
+        <StackPanel>
+          <TextBlock Text="Grammar and Parsing"
+                     FontSize="24"
+                     VerticalAlignment="Top"
+                     HorizontalAlignment="Center"
+                     Margin="0 10 0 0"/>
+          <TextBlock Margin="0 20 0 0" DockPanel.Dock="Top" IsVisible="{Binding PaneClosedNoWordInserted}">Input text</TextBlock>
           <TextBox DockPanel.Dock="Top"
                    AcceptsReturn="True"
                    TextWrapping="Wrap"
@@ -118,8 +149,8 @@
                    ScrollViewer.VerticalScrollBarVisibility="Auto"
                    Margin="0 10 0 0"
                    IsReadOnly="True"
-                   IsVisible="{Binding !PaneOpen}"/>
-          <TextBlock DockPanel.Dock="Top" Margin="0 10 0 0" IsVisible="{Binding !PaneOpen}">Input text tokenized</TextBlock>
+                   IsVisible="{Binding PaneClosedNoWordInserted}"/>
+          <TextBlock DockPanel.Dock="Top" Margin="0 10 0 0" IsVisible="{Binding PaneClosedNoWordInserted}">Input text tokenized</TextBlock>
           <TextBox DockPanel.Dock="Top"
                    AcceptsReturn="True"
                    TextWrapping="Wrap"
@@ -129,49 +160,41 @@
                    ScrollViewer.VerticalScrollBarVisibility="Auto"
                    Margin="0 10 0 0"
                    IsReadOnly="True"
-                   IsVisible="{Binding !PaneOpen}"/>
-        </DockPanel>
-        <Grid>
-          <TextBlock Margin="5 10 0 0" IsVisible="{Binding PaneOpen}">Parsing Table</TextBlock>
-          <DataGrid Name="ParsingTable" Margin="0 30 0 0" RowBackground="#252525" Background="#202020">
-          </DataGrid>
-        </Grid>
-        <TextBox Grid.Row="0"
-                 Grid.Column="0"
-                 IsVisible="{Binding PaneOpen}"
-                 Text="{Binding NewWordToParse}"
-                 Watermark="Insert word to parse"
-                 HorizontalAlignment="Right"
-                 Width="350"/>
-        <Button Grid.Row="0"
-                Grid.Column="1"
-                IsVisible="{Binding PaneOpen}"
-                IsDefault="True"
-                HorizontalAlignment="Right"
-                Width="50"
-                Command="{Binding Step}">
-          Step
-        </Button>
-        <StackPanel IsVisible="{Binding WordInserted}">
-          <TextBlock>Parsing Metadata:</TextBlock>
-          <TextBlock Text="{Binding Grammar._LL1WordParsing._Word}"/>
-          <TextBlock Text="{Binding Grammar._LL1WordParsing._RemainingWord}"/>
-          <TextBlock Text="{Binding Grammar._LL1WordParsing._ParsingQueue}"/>
+                   IsVisible="{Binding PaneClosedNoWordInserted}"/>
+          <Grid IsVisible="{Binding StepEnabled}">
+            <TextBlock Margin="5 10 0 0" IsVisible="{Binding PaneOpen}">Parsing Table</TextBlock>
+            <DataGrid Name="ParsingTable" Margin="0 30 0 0" RowBackground="#252525" Background="#202020">
+            </DataGrid>
+          </Grid>
+          <StackPanel Margin="0 10 0 0">
+            <Grid IsVisible="{Binding WordInserted}">
+              <DataGrid HeadersVisibility="None" Name="StackTable" Items="{Binding Grammar._LL1WordParsing._StackTable}" AutoGenerateColumns="False" Margin="0 30 0 0" RowBackground="#252525" Background="#202020">
+                <DataGrid.Columns>
+                  <DataGridTextColumn Binding="{Binding _Title}"/>
+                  <DataGridTextColumn Binding="{Binding _Value}" />
+                </DataGrid.Columns>
+              </DataGrid>
+            </Grid>
+            <DockPanel>
+              <StackPanel MinWidth="600" DockPanel.Dock="Left">
+                <agc:GraphPanel Margin="0 0 0 100" Graph="{Binding Grammar._LL1ParsingTree}" Zoom="1" LayoutMethod="SugiyamaScheme">
+                  <agc:GraphPanel.DataTemplates>
+                    <DataTemplate DataType="{x:Type local:StandardItem}">
+                      <agc:TextSticker Text="{Binding Symbol}"
+                                       Shape="Ellipse"
+                                       Padding="30,10"
+                                       Background="{Binding Background}"/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type local:ColoredEdge}">
+                      <agc:Connection Brush="Aqua" />
+                    </DataTemplate>
+                  </agc:GraphPanel.DataTemplates>
+                </agc:GraphPanel>
+              </StackPanel>
+            </DockPanel>
+          </StackPanel>
         </StackPanel>
-        <agc:GraphPanel Graph="{Binding Grammar._LL1ParsingTree}" Zoom="1.2" LayoutMethod="SugiyamaScheme">
-          <agc:GraphPanel.DataTemplates>
-            <DataTemplate DataType="{x:Type local:StandardItem}">
-              <agc:TextSticker Text="{Binding Symbol}"
-                               Shape="Ellipse"
-                               Padding="30,10"
-                               Background="{Binding Background}"/>
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type local:ColoredEdge}">
-              <agc:Connection Brush="Aqua" />
-            </DataTemplate>
-          </agc:GraphPanel.DataTemplates>
-        </agc:GraphPanel>
-      </StackPanel>
+      </ScrollViewer>
     </SplitView>
   </SplitView>
 </UserControl>

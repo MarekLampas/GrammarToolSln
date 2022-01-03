@@ -85,16 +85,25 @@ namespace GrammarTool.Models
                         {
                             if (symbolFollow == LL1InputGrammar._END_STRING)
                             {
+                                if (!terminalToProduction.ContainsKey(symbolFirst))
+                                    terminalToProduction.Add(symbolFirst, new HashSet<string>());
+
                                 terminalToProduction[symbolFirst].Add(productionSet.Key);
                             }
                             else
                             {
+                                if (!terminalToProduction.ContainsKey(symbolFollow))
+                                    terminalToProduction.Add(symbolFollow, new HashSet<string>());
+
                                 terminalToProduction[symbolFollow].Add(productionSet.Key);
                             }
                         }
                     }
                     else
                     {
+                        if (!terminalToProduction.ContainsKey(symbolFirst))
+                            terminalToProduction.Add(symbolFirst, new HashSet<string>());
+
                         terminalToProduction[symbolFirst].Add(productionSet.Key);
                     }
                 }

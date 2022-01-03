@@ -1,4 +1,6 @@
-﻿using GrammarTool.Models;
+﻿using Avalonia.Controls;
+using GrammarTool.Models;
+using GrammarTool.Views;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -33,8 +35,16 @@ namespace GrammarTool.ViewModels
 
         public string _InputTextTokenized { get; set; }
 
-        public LandingPageViewModel()
+        public LandingPageViewModel(string inputText, int selectedIndex = 0, bool[]? isChecked = null)
         {
+            _InputText = inputText;
+            _inputText = inputText;
+
+            _SelectedIndex = selectedIndex;
+
+            OpenFileDialogCommand = ReactiveCommand.Create(
+                async () => await ChooseFileExample());
+
             //TODO:instead of this list load all scanners saved on drive - json or xml with node Name and list node tokens definitions saved under uniqeue filename
             _ScannersAvailable = new List<string>();
             _ScannersAvailable.Add("C#");
@@ -49,9 +59,31 @@ namespace GrammarTool.ViewModels
                 _Scanner.Add(new Scanner(scanner));
             }
 
-            _SelectedItem = _Scanner.First();
+            _SelectedItem = _Scanner[selectedIndex];
+            _selectedItem = _Scanner[selectedIndex];
+
+            if (isChecked != null)
+            {
+                for (int i = 0; i < isChecked.Length; i++)
+                {
+                    _SelectedItem._tokenDefinitions[i]._isChecked = isChecked[i];
+                    _selectedItem._tokenDefinitions[i]._isChecked = isChecked[i];
+                }
+            }
+        }
+
+        private async Task<string> ChooseFileExample()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "Open example";
+            openFileDialog.Filters.Add(new FileDialogFilter() { Name = "Xml", Extensions = { "xml" } });
+            openFileDialog.AllowMultiple = true;
+            string[]? outPathStrings = await openFileDialog.ShowAsync(MainWindowView.Instance);
+            return outPathStrings == null ? string.Empty : outPathStrings[0];
         }
 
         public List<Scanner> _Scanner { get; }
+
+        public ReactiveCommand<Unit, Task<string>> OpenFileDialogCommand { get; }
     }
 }

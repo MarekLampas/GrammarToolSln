@@ -24,7 +24,7 @@ namespace GrammarTool.Helpers
             Plus,
             Increment,
             Decrement,
-            Muliply,
+            Multiply,
             Devide,
             Semicolon,
             Colon,
@@ -142,7 +142,7 @@ namespace GrammarTool.Helpers
             _tokenDefinitions.Add(new TokenDefinition(TokenType.Decrement, "^--"));
             _tokenDefinitions.Add(new TokenDefinition(TokenType.Plus, "^\\+"));
             _tokenDefinitions.Add(new TokenDefinition(TokenType.Minus, "^-"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Muliply, "^\\*"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.Multiply, "^\\*"));
             _tokenDefinitions.Add(new TokenDefinition(TokenType.Devide, "^/"));
             _tokenDefinitions.Add(new TokenDefinition(TokenType.Variable, "^var"));
             _tokenDefinitions.Add(new TokenDefinition(TokenType.DataType, "^bool|^int|^float|^double|^string"));
@@ -198,7 +198,7 @@ namespace GrammarTool.Helpers
             _tokenDefinitions.Add(new TokenDefinition(TokenType.Decrement, "^--"));
             _tokenDefinitions.Add(new TokenDefinition(TokenType.Plus, "^\\+"));
             _tokenDefinitions.Add(new TokenDefinition(TokenType.Minus, "^-"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Muliply, "^\\*"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.Multiply, "^\\*"));
             _tokenDefinitions.Add(new TokenDefinition(TokenType.Devide, "^/"));
             _tokenDefinitions.Add(new TokenDefinition(TokenType.And, "^and"));
             _tokenDefinitions.Add(new TokenDefinition(TokenType.Or, "^or"));

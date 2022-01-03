@@ -7,8 +7,8 @@
   <DockPanel>
     <Button DockPanel.Dock="Bottom"
             HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
-            Command="{Binding $parent[Window].DataContext.CreateGrammar}">
-      Open grammar
+            Command="{Binding OpenFileDialogCommand}">
+      Open example
     </Button>
     <Button DockPanel.Dock="Bottom"
             HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"

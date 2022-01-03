@@ -9,6 +9,10 @@ using System.Collections.ObjectModel;
 using GrammarTool.Views;
 using Avalonia.Media;
 using System.Linq;
+using System.IO;
+using System.Xml.Serialization;
+using System.Xml;
+using System.Text.RegularExpressions;
 
 namespace GrammarTool.ViewModels
 {
@@ -16,11 +20,27 @@ namespace GrammarTool.ViewModels
     {
         ViewModelBase content;
 
+        Example example;
+
         public MainWindowViewModel(Database db)
         {
-            Grammar = new GrammarPanelViewModel(new Symbols(), string.Empty, string.Empty, db.GetRules(), db.InicializeFirstFollow(), null, new LL1WordParsing(string.Empty), new LL1ParsingTree());
+            LandingPage = new LandingPageViewModel(string.Empty);
 
-            LandingPage = new LandingPageViewModel();
+            LandingPage.OpenFileDialogCommand.Subscribe(async model =>
+            {
+                string path = await model;
+
+                if (path != string.Empty) //else => dialog was canceled
+                {
+                    example = Deserialize(path);
+
+                    LandingPage = new LandingPageViewModel(example.InputText == null ? string.Empty : example.InputText, example.SelectedIndex == null ? 0 : (int)example.SelectedIndex, example.IsChecked);
+
+                    Content = LandingPage;
+                }
+            });
+
+            Grammar = new GrammarPanelViewModel(new Symbols(), string.Empty, string.Empty, db.GetRules(), db.InicializeFirstFollow(), null, new LL1WordParsing(string.Empty, new List<Token>()), new LL1ParsingTree());
 
             Content = LandingPage;
         }
@@ -31,7 +51,7 @@ namespace GrammarTool.ViewModels
             private set => this.RaiseAndSetIfChanged(ref content, value);
         }
 
-        public LandingPageViewModel LandingPage { get; }
+        public LandingPageViewModel LandingPage { get; set; }
 
         public GrammarPanelViewModel Grammar { get; }
 
@@ -48,6 +68,14 @@ namespace GrammarTool.ViewModels
                 LandingPage._InputTextTokenized = LandingPage._selectedItem.Tokenize(Grammar.Grammar._Symbols, LandingPage._inputText);
 
                 Grammar.Grammar._Symbols._TokensUsed = Grammar.Grammar._Symbols._Tokens.Select(x => x._TokenType.ToString()).Distinct().OrderBy(x => x).ToList();
+
+                if(example != null)
+                {
+                    if (example.Rules != null)
+                    {
+                        Grammar.Grammar._LL1Rules = new ObservableCollection<LL1GrammarRule>(example.Rules);
+                    }
+                }
             }
 
             //TODO: parsing table will not be updated if rules get changed!
@@ -93,9 +121,57 @@ namespace GrammarTool.ViewModels
                 CreateGrammar();
             });
 
+            vm.Save.Subscribe(async model =>
+            {
+                string path = await model;
+
+                if (path != string.Empty) //else => dialog was canceled
+                {
+                    Example example = new Example(LandingPage._SelectedIndex, LandingPage._SelectedItem._tokenDefinitions.Select(x => x._isChecked).ToArray(), LandingPage._InputText, Grammar.Grammar._LL1Rules.ToArray());
+
+                    var serialed = Serialize(example);
+
+                    serialed = Regex.Replace(serialed, " encoding=\".+\"", "", RegexOptions.IgnoreCase);
+
+                    File.WriteAllText(path, serialed);
+                }
+            });
+
             GrammarPanelView.SetParsingTableForView(vm.Grammar._LL1ParsingTable._LL1TerminalToProductions);
 
             Content = vm;
+        }
+
+        private string Serialize(Object o)
+        {
+            if (o == null)
+            {
+                return string.Empty;
+            }
+            try
+            {
+                using (var writer = new StringWriter())
+                {
+                    new XmlSerializer(o.GetType()).Serialize(writer, o);
+                    return writer.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred", ex);
+            }
+        }
+
+        private Example Deserialize(string path)
+        {
+            XmlSerializer ser = new XmlSerializer(typeof(Example));
+            Example example;
+            using (XmlReader reader = XmlReader.Create(path))
+            {
+                example = (Example)ser.Deserialize(reader);
+            }
+
+            return example;
         }
     }
 }
