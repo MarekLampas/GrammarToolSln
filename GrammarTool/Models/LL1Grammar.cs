@@ -28,7 +28,11 @@ namespace GrammarTool.Models
 
         public LL1ParsingTree _LL1ParsingTree { get; set; }
 
-        public LL1Grammar(Symbols symbols, IEnumerable<LL1GrammarRule> rules, IEnumerable<LL1FirstFollow> firstFollow, LL1ParsingTable? lL1ParsingTable, LL1WordParsing lL1WordParsing, LL1ParsingTree lL1ParsingTree)
+        public string _ProgressNote { get; set; }
+
+        public ObservableCollection<string> _Suggestions { get; set; }
+
+        public LL1Grammar(Symbols symbols, IEnumerable<LL1GrammarRule> rules, IEnumerable<LL1FirstFollow> firstFollow, LL1ParsingTable? lL1ParsingTable, LL1WordParsing lL1WordParsing, LL1ParsingTree lL1ParsingTree, string progressNote)
         {
             _Symbols = symbols;
 
@@ -64,6 +68,10 @@ namespace GrammarTool.Models
             _LL1WordParsing = lL1WordParsing;
 
             _LL1ParsingTree = lL1ParsingTree;
+
+            _ProgressNote = progressNote;
+
+            _Suggestions = new ObservableCollection<string>();
         }
 
         public void DoParseStep()
@@ -83,17 +91,18 @@ namespace GrammarTool.Models
                     var productionEmpty = _LL1ParsingTable._ParsingTable[nonTerminal][LL1InputGrammar._EMPTY_EXPANSION];
                     if (production.Count > 1)
                     {
-                        throw new Exception($"Parsing table cell ({nonTerminal}, {terminal}) does not contain exact one production.");
+                        _ProgressNote = $"First symbol on stack is Non-Terminal so we need to expand.\nNon-Terminal on stack is '{nonTerminal}' and Terminal on input is '{terminal}' and as we can see, there are multiple productions in this cell.\nTrerefor we can't decide if sentence belongs to our language.";
                     }
                     else
                     {
                         if (productionEmpty.Count != 1)
                         {
-                            throw new Exception($"Parsing table cell ({nonTerminal}, {terminal}) neiter cell ({nonTerminal}, {LL1InputGrammar._EMPTY_EXPANSION}) does contain exact one production.");
+                            _ProgressNote = $"First symbol on stack is Non-Terminal so we need to expand.\nNon-Terminal on stack is '{nonTerminal}' and Terminal on input is '{terminal}'.\nBecause there is no production in this cell neither in cell for empty expansion '{LL1InputGrammar._EMPTY_EXPANSION}', we can assume that sentence does not belong our language.";
                         }
                         else
                         {
                             _LL1WordParsing.Expand(productionEmpty.First());
+                            _ProgressNote = $"First symbol on stack is Non-Terminal so we need to expand.\nNon-Terminal on stack is '{nonTerminal}' and Terminal on input is '{terminal}'.\nBecause there is no production in this cell but there is possibility to use empty expansion '{LL1InputGrammar._EMPTY_EXPANSION}', we are aplying this production.";
                         }
                     }
                 }
@@ -102,6 +111,8 @@ namespace GrammarTool.Models
                     var actualNode = _LL1WordParsing.GetParsingQueuedTreeSymbol();
 
                     _LL1WordParsing.Expand(production.First());
+
+                    _ProgressNote = $"First symbol on stack is Non-Terminal so we need to expand.\nNon-Terminal on stack is '{nonTerminal}' and Terminal on input is '{terminal}' so we use production '{production.First()}' to expand our stack.";
 
                     var prod = production.First().Split("->")[1].Trim();
                     var prodSplitted = prod.Split(" ");
@@ -127,16 +138,41 @@ namespace GrammarTool.Models
 
                 if (terminalWord != terminalQueue)
                 {
-                    throw new Exception($"Next terminal in word ({terminalWord}) is not equal to next terminal in stack ({terminalQueue}).");
+                    _ProgressNote = $"First symbol on stack is Terminal so we need to consume.\nBut terminal on stack '{terminalQueue}' is not equal to terminal on input '{terminalWord}'.\nTherefor they can't be consumed and we can assume that sentance does not belong to out language.";
                 }
                 else
                 {
+                    _ProgressNote = $"First symbol on stack is Terminal so we need to consume.\nWe can see taht terminal on stack '{terminalQueue}' is equal to terminal on input '{terminalWord}'.\nTherefor they can be consumed.";
                     _LL1WordParsing.Consume();
                 }
             }
             else
             {
-                throw new Exception($"There was unexpected symbol in parsing stack ({_LL1WordParsing.GetParsingQueueSymbol()}).");
+                _ProgressNote = $"Symbol on stack '{_LL1WordParsing.GetParsingQueueSymbol()}' does not belong to Terminals neither Non-Terminals. Something went wrong.";
+            }
+        }
+
+        //TODO: suggestions when entering rule
+        public void GetSuggestions(string input)
+        {
+            if (!string.IsNullOrEmpty(input))
+            {
+                List<string> suggestions = new List<string>();
+
+                var wordArr = input.Split(" ");
+
+                var lastWord = wordArr[wordArr.Length - 1];
+
+                var possibleWords = _Symbols._Terminals.Where(x => x.StartsWith(lastWord));
+
+                foreach (var possibleWord in possibleWords)
+                {
+                    wordArr[wordArr.Length - 1] = possibleWord;
+
+                    suggestions.Add(string.Join(" ", wordArr));
+                }
+
+                _Suggestions = new ObservableCollection<string>(suggestions);
             }
         }
     }

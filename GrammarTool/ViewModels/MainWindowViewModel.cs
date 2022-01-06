@@ -40,7 +40,7 @@ namespace GrammarTool.ViewModels
                 }
             });
 
-            Grammar = new GrammarPanelViewModel(new Symbols(), string.Empty, string.Empty, db.GetRules(), db.InicializeFirstFollow(), null, new LL1WordParsing(string.Empty, new List<Token>()), new LL1ParsingTree());
+            Grammar = new GrammarPanelViewModel(new Symbols(), string.Empty, string.Empty, db.GetRules(), db.InicializeFirstFollow(), null, new LL1WordParsing(string.Empty, new List<Token>()), new LL1ParsingTree(), string.Empty);
 
             Content = LandingPage;
         }
@@ -79,7 +79,7 @@ namespace GrammarTool.ViewModels
             }
 
             //TODO: parsing table will not be updated if rules get changed!
-            var vm = new GrammarPanelViewModel(Grammar.Grammar._Symbols, LandingPage._inputText, LandingPage._InputTextTokenized, Grammar.Grammar._LL1Rules, Grammar.Grammar._LL1FirstFollow, Grammar.Grammar._LL1ParsingTable, Grammar.Grammar._LL1WordParsing, Grammar.Grammar._LL1ParsingTree);
+            var vm = new GrammarPanelViewModel(Grammar.Grammar._Symbols, LandingPage._inputText, LandingPage._InputTextTokenized, Grammar.Grammar._LL1Rules, Grammar.Grammar._LL1FirstFollow, Grammar.Grammar._LL1ParsingTable, Grammar.Grammar._LL1WordParsing, Grammar.Grammar._LL1ParsingTree, Grammar.Grammar._ProgressNote);
 
             vm.Add.Subscribe(model =>
             {

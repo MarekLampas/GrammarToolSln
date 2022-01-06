@@ -14,8 +14,7 @@ namespace GrammarTool.Helpers
         {
             Undefined,
             Not,
-            True,
-            False,
+            BoolValue,
             And,
             Or,
             Assign,
@@ -157,8 +156,7 @@ namespace GrammarTool.Helpers
             _tokenDefinitions.Add(new TokenDefinition(TokenType.Else, "^else"));
             _tokenDefinitions.Add(new TokenDefinition(TokenType.Foreach, "^foreach"));
             _tokenDefinitions.Add(new TokenDefinition(TokenType.For, "^for"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.True, "^true"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.False, "^false"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.BoolValue, "^true|^false"));
             _tokenDefinitions.Add(new TokenDefinition(TokenType.Undefined, "^null"));
             _tokenDefinitions.Add(new TokenDefinition(TokenType.Switch, "^switch"));
             _tokenDefinitions.Add(new TokenDefinition(TokenType.Case, "^case"));
@@ -208,8 +206,7 @@ namespace GrammarTool.Helpers
             _tokenDefinitions.Add(new TokenDefinition(TokenType.Else, "^else"));
             _tokenDefinitions.Add(new TokenDefinition(TokenType.Foreach, "^foreach"));
             _tokenDefinitions.Add(new TokenDefinition(TokenType.For, "^for"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.True, "^True"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.False, "^False"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.BoolValue, "^True|^False"));
             _tokenDefinitions.Add(new TokenDefinition(TokenType.Undefined, "^None"));
             _tokenDefinitions.Add(new TokenDefinition(TokenType.Break, "^break"));
             _tokenDefinitions.Add(new TokenDefinition(TokenType.Continue, "^continue"));

@@ -15,7 +15,20 @@
                    FontSize="24"
                    DockPanel.Dock="Top"
                    HorizontalAlignment="Center"
-                   Margin="10"/>
+                   Margin="10"
+                   IsVisible="{Binding !PaneOpen}"/>
+        <TextBlock Text="Progress"
+                   FontSize="24"
+                   DockPanel.Dock="Top"
+                   HorizontalAlignment="Center"
+                   Margin="10"
+                   IsVisible="{Binding PaneOpen}"/>
+        <TextBlock Text="{Binding Grammar._ProgressNote}"
+                   DockPanel.Dock="Top"
+                   TextWrapping="Wrap"
+                   HorizontalAlignment="Center"
+                   Margin="10"
+                   IsVisible="{Binding WordInserted}"/>
         <Button DockPanel.Dock="Bottom"
                 HorizontalAlignment="Stretch"
                 HorizontalContentAlignment="Center"
@@ -38,21 +51,22 @@
                 IsVisible="{Binding StepEnabled}">
           Step
         </Button>
-        <StackPanel>
-          <ListBox Items="{Binding Grammar._Symbols._TokensUsed}"
-                   DockPanel.Dock="Left"
-                   IsVisible="{Binding !PaneOpen}"
-                   MaxHeight="600"
-                   HorizontalAlignment="Stretch"
-                   Margin="0 10 0 0"
-                   ScrollViewer.VerticalScrollBarVisibility="Visible">
-            <ListBox.ItemTemplate>
-              <DataTemplate>
-                <TextBlock Text="{Binding}"/>
-              </DataTemplate>
-            </ListBox.ItemTemplate>
-          </ListBox>
-        </StackPanel>
+        <ScrollViewer IsTabStop="True">
+          <StackPanel>
+            <ListBox Items="{Binding Grammar._Symbols._TokensUsed}"
+                     DockPanel.Dock="Left"
+                     IsVisible="{Binding !PaneOpen}"
+                     HorizontalAlignment="Stretch"
+                     Margin="0 10 0 0"
+                     ScrollViewer.VerticalScrollBarVisibility="Visible">
+              <ListBox.ItemTemplate>
+                <DataTemplate>
+                  <TextBlock Text="{Binding}"/>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          </StackPanel>
+        </ScrollViewer>
       </DockPanel>
     </SplitView.Pane>
     <SplitView IsPaneOpen="{Binding !WordInserted}"
@@ -68,28 +82,32 @@
               </DockPanel>
               <DockPanel IsVisible="{Binding PaneClosedNoWordInserted}">
                 <StackPanel Spacing="5">
-
-                  <ListBox Items="{Binding Grammar._LL1Rules}"
-                       DockPanel.Dock="Left"
-                       MaxHeight="600"
-                       HorizontalAlignment="Stretch"
-                       Margin="0 10 0 0"
-                       ScrollViewer.VerticalScrollBarVisibility="Auto"
-                       ScrollViewer.HorizontalScrollBarVisibility="Auto">
-                    <ListBox.ItemTemplate>
+                  <ItemsControl Items="{Binding Grammar._LL1Rules}"
+                           DockPanel.Dock="Left"
+                           MaxHeight="600"
+                           Margin="0 10 0 0"
+                           ScrollViewer.VerticalScrollBarVisibility="Auto"
+                           ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                    <ItemsControl.DataTemplates>
                       <DataTemplate>
-                        <TextBlock Text="{Binding Rule}"/>
+                        <TextBox Text="{Binding Rule}"
+                                 BorderThickness="0"
+                                 Background="#202020"
+                                 SelectionBrush="#202020"
+                                 CornerRadius="0"
+                                 IsEnabled="True"
+                                 Focusable="True"/>
                       </DataTemplate>
-                    </ListBox.ItemTemplate>
-                  </ListBox>
-
+                    </ItemsControl.DataTemplates>
+                  </ItemsControl>
                   <Grid RowDefinitions="Auto,Auto,Auto">
                     <TextBox Grid.Row="0"
                              Grid.Column="0"
                              Text="{Binding NewRule}"
                              Watermark="Insert Rule (e.g., A -> aA)"
                              HorizontalAlignment="Left"
-                             Width="400"/>
+                             Width="400">
+                    </TextBox>
                     <Button Grid.Row="0"
                             Grid.Column="1"
                             IsDefault="True"

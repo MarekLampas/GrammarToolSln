@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -23,6 +24,10 @@ namespace GrammarTool.Views
 
                 foreach (var idx in _ParsingTable[0].Select((value, index) => index))
                 {
+                    //TODO: Highlite current value
+                    //if(idx == 2)
+                    //    grid.Columns.Add(new DataGridTextColumn { Header = $"{_ParsingTable[0][idx]}", Binding = new Binding($"[{idx}]"), Foreground = Brushes.LightSeaGreen });
+                    //else
                     grid.Columns.Add(new DataGridTextColumn { Header = $"{_ParsingTable[0][idx]}", Binding = new Binding($"[{idx}]") });
                 }
 

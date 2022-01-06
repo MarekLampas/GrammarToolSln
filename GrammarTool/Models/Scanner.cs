@@ -43,7 +43,7 @@ namespace GrammarTool.Models
                 {
                     if (IsWhitespace(remainingText))
                     {
-                        var nextCharacter = remainingText[1];
+                        var nextCharacter = remainingText[0];
                         if (nextCharacter == '\n')
                             inputTextTokenized += nextCharacter;
                         remainingText = remainingText.Substring(1);

@@ -22,13 +22,13 @@ namespace GrammarTool.ViewModels
 
         public string InputTextTokenized { get; set; }
 
-        public GrammarPanelViewModel(Symbols symbols, string inputText, string inputTextTokenized, IEnumerable<LL1GrammarRule> rules, IEnumerable<LL1FirstFollow> firstFollow, LL1ParsingTable? lL1ParsingTable, LL1WordParsing lL1WordParsing, LL1ParsingTree lL1ParsingTree)
+        public GrammarPanelViewModel(Symbols symbols, string inputText, string inputTextTokenized, IEnumerable<LL1GrammarRule> rules, IEnumerable<LL1FirstFollow> firstFollow, LL1ParsingTable? lL1ParsingTable, LL1WordParsing lL1WordParsing, LL1ParsingTree lL1ParsingTree, string progressNote)
         {
             InputText = inputText;
 
             InputTextTokenized = inputTextTokenized;
 
-            Grammar = new LL1Grammar(symbols, rules, firstFollow, lL1ParsingTable, lL1WordParsing, lL1ParsingTree);
+            Grammar = new LL1Grammar(symbols, rules, firstFollow, lL1ParsingTable, lL1WordParsing, lL1ParsingTree, progressNote);
 
             var addEnabled = this.WhenAnyValue(
                 x => x.NewRule,
@@ -56,7 +56,7 @@ namespace GrammarTool.ViewModels
         public string NewRule
         {
             get => rule;
-            set => this.RaiseAndSetIfChanged(ref rule, value);
+            set { this.RaiseAndSetIfChanged(ref rule, string.IsNullOrEmpty(value) ? rule : value); /*Grammar.GetSuggestions(rule); TODO: try to add AtoCompleteBox to Rules*/}
         }
 
         public LL1Grammar Grammar { get; }
