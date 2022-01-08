@@ -32,7 +32,9 @@ namespace GrammarTool.Models
 
         public ObservableCollection<string> _Suggestions { get; set; }
 
-        public LL1Grammar(Symbols symbols, IEnumerable<LL1GrammarRule> rules, IEnumerable<LL1FirstFollow> firstFollow, LL1ParsingTable? lL1ParsingTable, LL1WordParsing lL1WordParsing, LL1ParsingTree lL1ParsingTree, string progressNote)
+        public bool _HasOutput { get; set; }
+
+        public LL1Grammar(Symbols symbols, IEnumerable<LL1GrammarRule> rules, IEnumerable<LL1FirstFollow> firstFollow, LL1ParsingTable? lL1ParsingTable, LL1WordParsing lL1WordParsing, LL1ParsingTree lL1ParsingTree, string progressNote, bool hasOutput)
         {
             _Symbols = symbols;
 
@@ -70,6 +72,8 @@ namespace GrammarTool.Models
             _LL1ParsingTree = lL1ParsingTree;
 
             _ProgressNote = progressNote;
+
+            _HasOutput = hasOutput;
 
             _Suggestions = new ObservableCollection<string>();
         }
@@ -121,13 +125,16 @@ namespace GrammarTool.Models
                         var sym = prodSplitted[prodSplitted.Length - idx - 1];
                         var nodeId = sym + _LL1ParsingTree.Nodes.Count.ToString();
 
-                        if(sym != LL1InputGrammar._EMPTY_EXPANSION)
-                            _LL1WordParsing._ParsingQueuedTree.Add(nodeId);
+                        if (!sym.StartsWith("[") && !sym.EndsWith("]"))
+                        {
+                            if (sym != LL1InputGrammar._EMPTY_EXPANSION)
+                                _LL1WordParsing._ParsingQueuedTree.Add(nodeId);
 
-                        ISolidColorBrush background = _Symbols._NonTerminals.Contains(sym) ? Brushes.White : Brushes.LightSeaGreen;
-                        _LL1ParsingTree.AddNode(nodeId, sym, background);
+                            ISolidColorBrush background = _Symbols._NonTerminals.Contains(sym) ? Brushes.White : Brushes.LightSeaGreen;
+                            _LL1ParsingTree.AddNode(nodeId, sym, background);
 
-                        _LL1ParsingTree.AddEdge(actualNode, nodeId);
+                            _LL1ParsingTree.AddEdge(actualNode, nodeId);
+                        }
                     }
                 }
             }
@@ -138,13 +145,27 @@ namespace GrammarTool.Models
 
                 if (terminalWord != terminalQueue)
                 {
-                    _ProgressNote = $"First symbol on stack is Terminal so we need to consume.\nBut terminal on stack '{terminalQueue}' is not equal to terminal on input '{terminalWord}'.\nTherefor they can't be consumed and we can assume that sentance does not belong to out language.";
+                    _ProgressNote = $"First symbol on stack is Terminal so we need to consume.\nBut terminal on stack '{terminalQueue}' is not equal to terminal on input '{terminalWord}'.\nTherefore they can't be consumed and we can assume that sentance does not belong to out language.";
                 }
                 else
                 {
-                    _ProgressNote = $"First symbol on stack is Terminal so we need to consume.\nWe can see taht terminal on stack '{terminalQueue}' is equal to terminal on input '{terminalWord}'.\nTherefor they can be consumed.";
-                    _LL1WordParsing.Consume();
+                    if (terminalWord == LL1InputGrammar._END_STRING)
+                    {
+                        _ProgressNote = $"Neither input or stack contains any symbol.\nTherefore we can assume that sentance does belong to our language.";
+                    }
+                    else
+                    {
+                        _ProgressNote = $"First symbol on stack is Terminal so we need to consume.\nWe can see that terminal on stack '{terminalQueue}' is equal to terminal on input '{terminalWord}'.\nTherefore they can be consumed.";
+                        _LL1WordParsing.Consume();
+                    }
                 }
+            }
+            else if(_LL1WordParsing.GetParsingQueueSymbol().StartsWith("[") && _LL1WordParsing.GetParsingQueueSymbol().EndsWith("]"))
+            {
+                var terminalQueue = _LL1WordParsing.GetParsingQueueSymbol();
+
+                _ProgressNote = $"First symbol on stack is Output symbol so we need to add it's attribute to output.\nWe can see that terminal on stack '{terminalQueue}' so we must find it's corresponding atribute.";
+                _LL1WordParsing.AddOutput();
             }
             else
             {

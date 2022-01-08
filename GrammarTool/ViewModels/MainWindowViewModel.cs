@@ -22,8 +22,12 @@ namespace GrammarTool.ViewModels
 
         Example example;
 
-        public MainWindowViewModel(Database db)
+        Database db;
+
+        public MainWindowViewModel(Database _db)
         {
+            db = _db;
+
             LandingPage = new LandingPageViewModel(string.Empty);
 
             LandingPage.OpenFileDialogCommand.Subscribe(async model =>
@@ -40,7 +44,7 @@ namespace GrammarTool.ViewModels
                 }
             });
 
-            Grammar = new GrammarPanelViewModel(new Symbols(), string.Empty, string.Empty, db.GetRules(), db.InicializeFirstFollow(), null, new LL1WordParsing(string.Empty, new List<Token>()), new LL1ParsingTree(), string.Empty);
+            Grammar = new GrammarPanelViewModel(new Symbols(), string.Empty, string.Empty, db.GetRules(), db.InicializeFirstFollow(), null, new LL1WordParsing(string.Empty, new List<Token>(), string.Empty, false), new LL1ParsingTree(), string.Empty, false);
 
             Content = LandingPage;
         }
@@ -53,7 +57,7 @@ namespace GrammarTool.ViewModels
 
         public LandingPageViewModel LandingPage { get; set; }
 
-        public GrammarPanelViewModel Grammar { get; }
+        public GrammarPanelViewModel Grammar { get; set; }
 
         public void CreateGrammar()
         {
@@ -79,7 +83,7 @@ namespace GrammarTool.ViewModels
             }
 
             //TODO: parsing table will not be updated if rules get changed!
-            var vm = new GrammarPanelViewModel(Grammar.Grammar._Symbols, LandingPage._inputText, LandingPage._InputTextTokenized, Grammar.Grammar._LL1Rules, Grammar.Grammar._LL1FirstFollow, Grammar.Grammar._LL1ParsingTable, Grammar.Grammar._LL1WordParsing, Grammar.Grammar._LL1ParsingTree, Grammar.Grammar._ProgressNote);
+            var vm = new GrammarPanelViewModel(Grammar.Grammar._Symbols, LandingPage._inputText, LandingPage._InputTextTokenized, Grammar.Grammar._LL1Rules, Grammar.Grammar._LL1FirstFollow, Grammar.Grammar._LL1ParsingTable, Grammar.Grammar._LL1WordParsing, Grammar.Grammar._LL1ParsingTree, Grammar.Grammar._ProgressNote, Grammar.Grammar._HasOutput);
 
             vm.Add.Subscribe(model =>
             {
@@ -96,6 +100,8 @@ namespace GrammarTool.ViewModels
                 var lL1ComputeFirstFollow = new LL1ComputeFirstFollow(Grammar.Grammar._Symbols, model);
 
                 Grammar.Grammar._LL1FirstFollow = new ObservableCollection<LL1FirstFollow>(lL1ComputeFirstFollow.Compute(Grammar.Grammar._LL1Rules));
+
+                Grammar.Grammar._HasOutput = model._HasOutput;
 
                 //Content = new GrammarPanelViewModel(Grammar.Rules, Grammar.Grammar._LL1FirstFollow);
                 CreateGrammar();
@@ -134,6 +140,22 @@ namespace GrammarTool.ViewModels
                     serialed = Regex.Replace(serialed, " encoding=\".+\"", "", RegexOptions.IgnoreCase);
 
                     File.WriteAllText(path, serialed);
+                }
+            });
+
+            vm.Back.Subscribe(model =>
+            {
+                if (model)
+                {
+                    Grammar = new GrammarPanelViewModel(Grammar.Grammar._Symbols, LandingPage._inputText, LandingPage._InputTextTokenized, Grammar.Grammar._LL1Rules, db.InicializeFirstFollow(), null, new LL1WordParsing(string.Empty, new List<Token>(), string.Empty, false), new LL1ParsingTree(), string.Empty, false);
+
+                    CreateGrammar();
+                }
+                else
+                {
+                    Grammar = new GrammarPanelViewModel(new Symbols(), string.Empty, string.Empty, db.GetRules(), db.InicializeFirstFollow(), null, new LL1WordParsing(string.Empty, new List<Token>(), string.Empty, false), new LL1ParsingTree(), string.Empty, false);
+
+                    Content = LandingPage; //TODO: create new MainWindowViewModel instance because of open example subscription
                 }
             });
 

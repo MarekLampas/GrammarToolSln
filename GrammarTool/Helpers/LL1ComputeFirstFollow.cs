@@ -68,7 +68,14 @@ namespace GrammarTool.Helpers
 
                 foreach (var rule in _FirstByRule.Keys)
                 {
-                    First(rule);
+                    if (rule.StartsWith("[") && rule.EndsWith("]"))
+                    {
+                        First(string.Join(" ", rule.Split(" ").Take(rule.Split(" ").Length)));
+                    }
+                    else
+                    {
+                        First(rule);
+                    }
                     
                     if (!(_FirstByRule[rule].SetEquals(firstByRuleOld[rule])))
                         wasChanged = true;
@@ -93,7 +100,14 @@ namespace GrammarTool.Helpers
 
                 foreach (var rule in _FirstByRule.Keys)
                 {
-                    Follow(rule);
+                    if (rule.StartsWith("[") && rule.EndsWith("]"))
+                    {
+                        Follow(string.Join(" ", rule.Split(" ").Take(rule.Split(" ").Length)));
+                    }
+                    else
+                    {
+                        Follow(rule);
+                    }
                 }
 
                 foreach (var nonTerminal in _Follow.Keys)

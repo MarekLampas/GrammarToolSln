@@ -8,9 +8,18 @@
              x:Class="GrammarTool.Views.GrammarPanelView">
   <SplitView IsPaneOpen="True"
              DisplayMode="Inline"
-             OpenPaneLength="250">
+             OpenPaneLength="250"
+             Background="#151515">
     <SplitView.Pane>
       <DockPanel>
+        <Button DockPanel.Dock="Top"
+                FontSize="24"
+                Background="#151515"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Left"
+                Command="{Binding Back}">
+          &lt;-
+        </Button>
         <TextBlock Text="Terminals used"
                    FontSize="24"
                    DockPanel.Dock="Top"
@@ -155,8 +164,8 @@
           <TextBlock Text="Grammar and Parsing"
                      FontSize="24"
                      VerticalAlignment="Top"
-                     HorizontalAlignment="Center"
-                     Margin="0 10 0 0"/>
+                     HorizontalAlignment="Left"
+                     Margin="20 10 0 0"/>
           <TextBlock Margin="0 20 0 0" DockPanel.Dock="Top" IsVisible="{Binding PaneClosedNoWordInserted}">Input text</TextBlock>
           <TextBox DockPanel.Dock="Top"
                    AcceptsReturn="True"

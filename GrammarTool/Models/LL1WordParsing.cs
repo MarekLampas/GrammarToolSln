@@ -15,7 +15,7 @@ namespace GrammarTool.Models
 
         public string _ParsingQueue { get; set; }
 
-        //public string _OutputWord { get; set; }
+        public string _OutputWord { get; set; }
 
         public List<StackTable> _StackTable { get; set; }
 
@@ -23,9 +23,11 @@ namespace GrammarTool.Models
 
         public List<Token> _Tokens { get; set; }
 
+        public List<Token> _TokenStack { get; set; }
+
         //public List<Token> _ParsingQueueTokens { get; set; }
 
-        public LL1WordParsing(string word, List<Token> tokens)
+        public LL1WordParsing(string word, List<Token> tokens, string outputWord, bool hasOutput)
         {
             _Word = word.Replace("\n", " ");
 
@@ -33,16 +35,24 @@ namespace GrammarTool.Models
 
             _ParsingQueue = LL1InputGrammar._STARTING_SYMBOL + " " + LL1InputGrammar._END_STRING;
 
+            _OutputWord = outputWord;
+
             _StackTable = new List<StackTable>();
             _StackTable.Add(new StackTable("Inserted word:", _Word));
             _StackTable.Add(new StackTable("Remaining word:", _RemainingWord));
             _StackTable.Add(new StackTable("Parsing stack", _ParsingQueue));
+            if (hasOutput)
+            {
+                _StackTable.Add(new StackTable("Output word:", _OutputWord));
+            }
 
             _ParsingQueuedTree = new List<string>();
 
             _ParsingQueuedTree.Add(LL1InputGrammar._STARTING_SYMBOL + "0");
 
-            _Tokens = tokens;
+            _Tokens = new List<Token>(tokens);
+
+            _TokenStack = new List<Token>();
         }
 
         public class StackTable
@@ -78,6 +88,41 @@ namespace GrammarTool.Models
             _StackTable[2]._Value = _ParsingQueue;
 
             _ParsingQueuedTree.RemoveAt(_ParsingQueuedTree.Count - 1);
+
+            var lastSymbol = productionStripped.Split(' ').Last();
+
+            if (lastSymbol.StartsWith("[") && lastSymbol.EndsWith("]"))
+            {
+                int count = _Tokens.Count();
+
+                for (int i = 0; i < count; i++)
+                {
+                    if (_Tokens[i]._TokenType.ToString() == lastSymbol.Substring(1, lastSymbol.Length - 2))
+                    {
+                        _TokenStack.Insert(0, _Tokens[i]);
+
+                        _Tokens.RemoveAt(i);
+
+                        break;
+                    }
+                }
+
+                if(_Tokens.Count() == count)
+                {
+                    throw new Exception("Output not found!");
+                }
+            }
+        }
+
+        public void AddOutput()
+        {
+            _ParsingQueue = string.Join(" ", _ParsingQueue.Split(" ").Skip(1)).Trim();
+            _StackTable[2]._Value = _ParsingQueue;
+
+            _OutputWord += $" {_TokenStack[0]._Value}".Trim();
+            _StackTable[3]._Value = _OutputWord;
+
+            _TokenStack.RemoveAt(0);
         }
 
         public string GetRemaningWordSymbol()

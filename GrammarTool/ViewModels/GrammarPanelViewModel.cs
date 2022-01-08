@@ -22,13 +22,13 @@ namespace GrammarTool.ViewModels
 
         public string InputTextTokenized { get; set; }
 
-        public GrammarPanelViewModel(Symbols symbols, string inputText, string inputTextTokenized, IEnumerable<LL1GrammarRule> rules, IEnumerable<LL1FirstFollow> firstFollow, LL1ParsingTable? lL1ParsingTable, LL1WordParsing lL1WordParsing, LL1ParsingTree lL1ParsingTree, string progressNote)
+        public GrammarPanelViewModel(Symbols symbols, string inputText, string inputTextTokenized, IEnumerable<LL1GrammarRule> rules, IEnumerable<LL1FirstFollow> firstFollow, LL1ParsingTable? lL1ParsingTable, LL1WordParsing lL1WordParsing, LL1ParsingTree lL1ParsingTree, string progressNote, bool hasOutput)
         {
             InputText = inputText;
 
             InputTextTokenized = inputTextTokenized;
 
-            Grammar = new LL1Grammar(symbols, rules, firstFollow, lL1ParsingTable, lL1WordParsing, lL1ParsingTree, progressNote);
+            Grammar = new LL1Grammar(symbols, rules, firstFollow, lL1ParsingTable, lL1WordParsing, lL1ParsingTree, progressNote, hasOutput);
 
             var addEnabled = this.WhenAnyValue(
                 x => x.NewRule,
@@ -46,11 +46,14 @@ namespace GrammarTool.ViewModels
                 () => new LL1InputGrammar(symbols: Grammar._Symbols,rules:  Grammar._LL1Rules));
 
             Step = ReactiveCommand.Create(
-                () => new LL1WordParsing(word: InputTextTokenized, tokens: Grammar._Symbols._Tokens)/*,
+                () => new LL1WordParsing(word: InputTextTokenized, tokens: Grammar._Symbols._Tokens, Grammar._LL1WordParsing._OutputWord, hasOutput: Grammar._HasOutput)/*,
                 stepEnabled*/);
 
             Save = ReactiveCommand.Create(
                 async () => await SaveFileExample());
+
+            Back = ReactiveCommand.Create(
+                () => StepEnabled);
         }
 
         public string NewRule
@@ -105,5 +108,7 @@ namespace GrammarTool.ViewModels
         public ReactiveCommand<Unit, LL1WordParsing> Step { get; }
 
         public ReactiveCommand<Unit, Task<string>> Save { get; }
+
+        public ReactiveCommand<Unit, bool> Back { get; }
     }
 }

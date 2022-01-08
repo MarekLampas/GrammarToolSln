@@ -20,9 +20,13 @@ namespace GrammarTool.Helpers
         
         public Dictionary<string, List<string>> _ProductionDict { get; private set; }
 
+        public bool _HasOutput { get; set; }
+
         public LL1InputGrammar(Symbols symbols, IEnumerable<LL1GrammarRule> rules)
         {
             _Symbols = symbols;
+
+            _HasOutput = false;
 
             Proccess(rules);
         }
@@ -70,7 +74,14 @@ namespace GrammarTool.Helpers
                             }
                             else
                             {
-                                throw new Exception($"Production left side contains symbol '{symbol}', but it's not used terminal or non terminal!");
+                                if (!symbol.StartsWith("[") || !symbol.EndsWith("]") || !_Symbols._TokensUsed.Contains(symbol.Substring(1, symbol.Length - 2)))
+                                {
+                                    throw new Exception($"Production left side contains symbol '{symbol}', but it's not used terminal or non terminal!");
+                                }
+                                else
+                                {
+                                    _HasOutput = true;
+                                }
                             }
                         }
                     }
