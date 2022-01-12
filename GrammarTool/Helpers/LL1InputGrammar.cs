@@ -22,11 +22,15 @@ namespace GrammarTool.Helpers
 
         public bool _HasOutput { get; set; }
 
+        public string _Error { get; set; }
+
         public LL1InputGrammar(Symbols symbols, IEnumerable<LL1GrammarRule> rules)
         {
             _Symbols = symbols;
 
             _HasOutput = false;
+
+            _Error = string.Empty;
 
             Proccess(rules);
         }
@@ -57,7 +61,7 @@ namespace GrammarTool.Helpers
 
             if (!_Symbols._NonTerminals.Contains(LL1InputGrammar._STARTING_SYMBOL))
             {
-                throw new Exception($"No rule for starting symbol {LL1InputGrammar._STARTING_SYMBOL} was provided");
+                _Error = $"No rule for starting symbol {LL1InputGrammar._STARTING_SYMBOL} was provided";
             }
 
             foreach (var productionList in _ProductionDict.Values)
@@ -70,13 +74,14 @@ namespace GrammarTool.Helpers
                         {
                             if (_Symbols._Terminals.Contains(symbol))
                             {
+                                _Symbols._TokensUsed.Add(symbol);
                                 //throw new Exception($"Production left side contains symbol '{symbol}', but it's not used terminal or non terminal! But scanner terminals contains it!");
                             }
                             else
                             {
                                 if (!symbol.StartsWith("[") || !symbol.EndsWith("]") || !_Symbols._TokensUsed.Contains(symbol.Substring(1, symbol.Length - 2)))
                                 {
-                                    throw new Exception($"Production left side contains symbol '{symbol}', but it's not used terminal or non terminal!");
+                                    _Error = $"Production left side contains symbol '{symbol}', but it's not used terminal or non terminal!";
                                 }
                                 else
                                 {

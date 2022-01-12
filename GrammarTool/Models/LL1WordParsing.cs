@@ -89,15 +89,21 @@ namespace GrammarTool.Models
 
             _ParsingQueuedTree.RemoveAt(_ParsingQueuedTree.Count - 1);
 
-            var lastSymbol = productionStripped.Split(' ').Last();
+            var outputSymbols = productionStripped.Split(' ').Where(x => x.StartsWith("[") && x.EndsWith("]"));
 
-            if (lastSymbol.StartsWith("[") && lastSymbol.EndsWith("]"))
+            if (outputSymbols.Count() > 1)
             {
+                throw new Exception("Rule can't contain more then one output symbol.");
+            }
+            else if (outputSymbols.Count() == 1)
+            {
+                var outputSymbol = outputSymbols.First();
+
                 int count = _Tokens.Count();
 
                 for (int i = 0; i < count; i++)
                 {
-                    if (_Tokens[i]._TokenType.ToString() == lastSymbol.Substring(1, lastSymbol.Length - 2))
+                    if (_Tokens[i]._TokenType.ToString() == outputSymbol.Substring(1, outputSymbol.Length - 2))
                     {
                         _TokenStack.Insert(0, _Tokens[i]);
 
@@ -119,7 +125,8 @@ namespace GrammarTool.Models
             _ParsingQueue = string.Join(" ", _ParsingQueue.Split(" ").Skip(1)).Trim();
             _StackTable[2]._Value = _ParsingQueue;
 
-            _OutputWord += $" {_TokenStack[0]._Value}".Trim();
+            _OutputWord += $" {_TokenStack[0]._Value}";
+            _OutputWord.Trim();
             _StackTable[3]._Value = _OutputWord;
 
             _TokenStack.RemoveAt(0);

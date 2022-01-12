@@ -22,11 +22,15 @@ namespace GrammarTool.ViewModels
 
         public string InputTextTokenized { get; set; }
 
-        public GrammarPanelViewModel(Symbols symbols, string inputText, string inputTextTokenized, IEnumerable<LL1GrammarRule> rules, IEnumerable<LL1FirstFollow> firstFollow, LL1ParsingTable? lL1ParsingTable, LL1WordParsing lL1WordParsing, LL1ParsingTree lL1ParsingTree, string progressNote, bool hasOutput)
+        public string ErrorRule { get; set; }
+
+        public GrammarPanelViewModel(Symbols symbols, string inputText, string inputTextTokenized, IEnumerable<LL1GrammarRule> rules, IEnumerable<LL1FirstFollow> firstFollow, LL1ParsingTable? lL1ParsingTable, LL1WordParsing lL1WordParsing, LL1ParsingTree lL1ParsingTree, Progress progressNote, bool hasOutput, string errorRule = "")
         {
             InputText = inputText;
 
             InputTextTokenized = inputTextTokenized;
+
+            ErrorRule = errorRule;
 
             Grammar = new LL1Grammar(symbols, rules, firstFollow, lL1ParsingTable, lL1WordParsing, lL1ParsingTree, progressNote, hasOutput);
 

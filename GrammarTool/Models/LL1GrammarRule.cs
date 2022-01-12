@@ -17,7 +17,7 @@ namespace GrammarTool.Models
         {
         }
 
-        public LL1GrammarRule(string? rule, bool isValid = false)
+        public LL1GrammarRule(string? rule)
         {
             Rule = rule;
         }

@@ -32,7 +32,8 @@
                    HorizontalAlignment="Center"
                    Margin="10"
                    IsVisible="{Binding PaneOpen}"/>
-        <TextBlock Text="{Binding Grammar._ProgressNote}"
+        <TextBlock Text="{Binding Grammar._ProgressNote.Note}"
+                   Foreground="{Binding Grammar._ProgressNote.Color}"
                    DockPanel.Dock="Top"
                    TextWrapping="Wrap"
                    HorizontalAlignment="Center"
@@ -90,7 +91,7 @@
                 <TextBlock IsVisible="{Binding !PaneOpen}">Grammar</TextBlock>
               </DockPanel>
               <DockPanel IsVisible="{Binding PaneClosedNoWordInserted}">
-                <StackPanel Spacing="5">
+                <StackPanel DockPanel.Dock="Top" Spacing="5">
                   <ItemsControl Items="{Binding Grammar._LL1Rules}"
                            DockPanel.Dock="Left"
                            MaxHeight="600"
@@ -127,6 +128,11 @@
                     </Button>
                   </Grid>
                 </StackPanel>
+                <TextBlock Text="{Binding ErrorRule}"
+                           TextWrapping="Wrap"
+                           Margin="10"
+                           DockPanel.Dock="Top"
+                           Foreground="DarkRed"/>
               </DockPanel>
               <Grid IsVisible="{Binding PaneOpenNoWordInserted}">
                 <TextBlock Foreground="Aqua" Margin="5 15 0 0">First Set</TextBlock>

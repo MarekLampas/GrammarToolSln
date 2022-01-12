@@ -28,13 +28,13 @@ namespace GrammarTool.Models
 
         public LL1ParsingTree _LL1ParsingTree { get; set; }
 
-        public string _ProgressNote { get; set; }
+        public Progress _ProgressNote { get; set; }
 
         public ObservableCollection<string> _Suggestions { get; set; }
 
         public bool _HasOutput { get; set; }
 
-        public LL1Grammar(Symbols symbols, IEnumerable<LL1GrammarRule> rules, IEnumerable<LL1FirstFollow> firstFollow, LL1ParsingTable? lL1ParsingTable, LL1WordParsing lL1WordParsing, LL1ParsingTree lL1ParsingTree, string progressNote, bool hasOutput)
+        public LL1Grammar(Symbols symbols, IEnumerable<LL1GrammarRule> rules, IEnumerable<LL1FirstFollow> firstFollow, LL1ParsingTable? lL1ParsingTable, LL1WordParsing lL1WordParsing, LL1ParsingTree lL1ParsingTree, Progress progressNote, bool hasOutput)
         {
             _Symbols = symbols;
 
@@ -95,45 +95,57 @@ namespace GrammarTool.Models
                     var productionEmpty = _LL1ParsingTable._ParsingTable[nonTerminal][LL1InputGrammar._EMPTY_EXPANSION];
                     if (production.Count > 1)
                     {
-                        _ProgressNote = $"First symbol on stack is Non-Terminal so we need to expand.\nNon-Terminal on stack is '{nonTerminal}' and Terminal on input is '{terminal}' and as we can see, there are multiple productions in this cell.\nTrerefor we can't decide if sentence belongs to our language.";
+                        _ProgressNote.Note = $"First symbol on stack is Non-Terminal so we need to expand.\nNon-Terminal on stack is '{nonTerminal}' and Terminal on input is '{terminal}' and as we can see, there are multiple productions in this cell.\nTrerefor we can't decide if sentence belongs to our language.";
+                        _ProgressNote.Color = Brushes.DarkRed;
                     }
                     else
                     {
                         if (productionEmpty.Count != 1)
                         {
-                            _ProgressNote = $"First symbol on stack is Non-Terminal so we need to expand.\nNon-Terminal on stack is '{nonTerminal}' and Terminal on input is '{terminal}'.\nBecause there is no production in this cell neither in cell for empty expansion '{LL1InputGrammar._EMPTY_EXPANSION}', we can assume that sentence does not belong our language.";
+                            _ProgressNote.Note = $"First symbol on stack is Non-Terminal so we need to expand.\nNon-Terminal on stack is '{nonTerminal}' and Terminal on input is '{terminal}'.\nBecause there is no production in this cell neither in cell for empty expansion '{LL1InputGrammar._EMPTY_EXPANSION}', we can assume that sentence does not belong our language.";
+                            _ProgressNote.Color = Brushes.DarkRed;
                         }
                         else
                         {
                             _LL1WordParsing.Expand(productionEmpty.First());
-                            _ProgressNote = $"First symbol on stack is Non-Terminal so we need to expand.\nNon-Terminal on stack is '{nonTerminal}' and Terminal on input is '{terminal}'.\nBecause there is no production in this cell but there is possibility to use empty expansion '{LL1InputGrammar._EMPTY_EXPANSION}', we are aplying this production.";
+                            _ProgressNote.Note = $"First symbol on stack is Non-Terminal so we need to expand.\nNon-Terminal on stack is '{nonTerminal}' and Terminal on input is '{terminal}'.\nBecause there is no production in this cell but there is possibility to use empty expansion '{LL1InputGrammar._EMPTY_EXPANSION}', we are aplying this production.";
                         }
                     }
                 }
                 else
                 {
-                    var actualNode = _LL1WordParsing.GetParsingQueuedTreeSymbol();
+                    var outputSymbols = production.First().Split(' ').Where(x => x.StartsWith("[") && x.EndsWith("]"));
 
-                    _LL1WordParsing.Expand(production.First());
-
-                    _ProgressNote = $"First symbol on stack is Non-Terminal so we need to expand.\nNon-Terminal on stack is '{nonTerminal}' and Terminal on input is '{terminal}' so we use production '{production.First()}' to expand our stack.";
-
-                    var prod = production.First().Split("->")[1].Trim();
-                    var prodSplitted = prod.Split(" ");
-                    for (int idx = 0; idx < prodSplitted.Length; idx++)
+                    if (outputSymbols.Count() > 1)
                     {
-                        var sym = prodSplitted[prodSplitted.Length - idx - 1];
-                        var nodeId = sym + _LL1ParsingTree.Nodes.Count.ToString();
+                        _ProgressNote.Note = $"First symbol on stack is Non-Terminal so we need to expand.\nNon-Terminal on stack is '{nonTerminal}' and Terminal on input is '{terminal}' so we use production '{production.First()}' to expand our stack.\nBut production can't contain mote than one output symbol and this one contains {outputSymbols.Count()}.";
+                        _ProgressNote.Color = Brushes.DarkRed;
+                    }
+                    else
+                    {
+                        var actualNode = _LL1WordParsing.GetParsingQueuedTreeSymbol();
 
-                        if (!sym.StartsWith("[") && !sym.EndsWith("]"))
+                        _LL1WordParsing.Expand(production.First());
+
+                        _ProgressNote.Note = $"First symbol on stack is Non-Terminal so we need to expand.\nNon-Terminal on stack is '{nonTerminal}' and Terminal on input is '{terminal}' so we use production '{production.First()}' to expand our stack.";
+
+                        var prod = production.First().Split("->")[1].Trim();
+                        var prodSplitted = prod.Split(" ");
+                        for (int idx = 0; idx < prodSplitted.Length; idx++)
                         {
-                            if (sym != LL1InputGrammar._EMPTY_EXPANSION)
-                                _LL1WordParsing._ParsingQueuedTree.Add(nodeId);
+                            var sym = prodSplitted[prodSplitted.Length - idx - 1];
+                            var nodeId = sym + _LL1ParsingTree.Nodes.Count.ToString();
 
-                            ISolidColorBrush background = _Symbols._NonTerminals.Contains(sym) ? Brushes.White : Brushes.LightSeaGreen;
-                            _LL1ParsingTree.AddNode(nodeId, sym, background);
+                            if (!sym.StartsWith("[") && !sym.EndsWith("]"))
+                            {
+                                if (sym != LL1InputGrammar._EMPTY_EXPANSION)
+                                    _LL1WordParsing._ParsingQueuedTree.Add(nodeId);
 
-                            _LL1ParsingTree.AddEdge(actualNode, nodeId);
+                                ISolidColorBrush background = _Symbols._NonTerminals.Contains(sym) ? Brushes.White : Brushes.LightSeaGreen;
+                                _LL1ParsingTree.AddNode(nodeId, sym, background);
+
+                                _LL1ParsingTree.AddEdge(actualNode, nodeId);
+                            }
                         }
                     }
                 }
@@ -145,17 +157,19 @@ namespace GrammarTool.Models
 
                 if (terminalWord != terminalQueue)
                 {
-                    _ProgressNote = $"First symbol on stack is Terminal so we need to consume.\nBut terminal on stack '{terminalQueue}' is not equal to terminal on input '{terminalWord}'.\nTherefore they can't be consumed and we can assume that sentance does not belong to out language.";
+                    _ProgressNote.Note = $"First symbol on stack is Terminal so we need to consume.\nBut terminal on stack '{terminalQueue}' is not equal to terminal on input '{terminalWord}'.\nTherefore they can't be consumed and we can assume that sentance does not belong to out language.";
+                    _ProgressNote.Color = Brushes.DarkRed;
                 }
                 else
                 {
                     if (terminalWord == LL1InputGrammar._END_STRING)
                     {
-                        _ProgressNote = $"Neither input or stack contains any symbol.\nTherefore we can assume that sentance does belong to our language.";
+                        _ProgressNote.Note = $"Neither input or stack contains any symbol.\nTherefore we can assume that sentance does belong to our language.";
+                        _ProgressNote.Color = Brushes.DarkGreen;
                     }
                     else
                     {
-                        _ProgressNote = $"First symbol on stack is Terminal so we need to consume.\nWe can see that terminal on stack '{terminalQueue}' is equal to terminal on input '{terminalWord}'.\nTherefore they can be consumed.";
+                        _ProgressNote.Note = $"First symbol on stack is Terminal so we need to consume.\nWe can see that terminal on stack '{terminalQueue}' is equal to terminal on input '{terminalWord}'.\nTherefore they can be consumed.";
                         _LL1WordParsing.Consume();
                     }
                 }
@@ -164,12 +178,13 @@ namespace GrammarTool.Models
             {
                 var terminalQueue = _LL1WordParsing.GetParsingQueueSymbol();
 
-                _ProgressNote = $"First symbol on stack is Output symbol so we need to add it's attribute to output.\nWe can see that terminal on stack '{terminalQueue}' so we must find it's corresponding atribute.";
+                _ProgressNote.Note = $"First symbol on stack is Output symbol so we need to add it's attribute to output.\nWe can see that terminal on stack '{terminalQueue}' so we must find it's corresponding atribute.";
                 _LL1WordParsing.AddOutput();
             }
             else
             {
-                _ProgressNote = $"Symbol on stack '{_LL1WordParsing.GetParsingQueueSymbol()}' does not belong to Terminals neither Non-Terminals. Something went wrong.";
+                _ProgressNote.Note = $"Symbol on stack '{_LL1WordParsing.GetParsingQueueSymbol()}' does not belong to Terminals neither Non-Terminals. Something went wrong.";
+                _ProgressNote.Color = Brushes.DarkRed;
             }
         }
 

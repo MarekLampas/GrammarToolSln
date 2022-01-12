@@ -136,7 +136,7 @@ namespace GrammarTool.Helpers
             _tokenDefinitions.Add(new TokenDefinition(TokenType.CurlyBracketClose, "^}"));
             _tokenDefinitions.Add(new TokenDefinition(TokenType.SquareBracketOpen, "^\\["));
             _tokenDefinitions.Add(new TokenDefinition(TokenType.SquareBracketClose, "^\\]"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Number, "^\\d+.\\d+|^\\d+"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.Number, "^\\d+\\.\\d+|^\\d+"));
             _tokenDefinitions.Add(new TokenDefinition(TokenType.Increment, "^\\+\\+"));
             _tokenDefinitions.Add(new TokenDefinition(TokenType.Decrement, "^--"));
             _tokenDefinitions.Add(new TokenDefinition(TokenType.Plus, "^\\+"));
