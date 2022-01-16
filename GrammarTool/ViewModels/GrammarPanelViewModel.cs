@@ -24,13 +24,17 @@ namespace GrammarTool.ViewModels
 
         public string ErrorRule { get; set; }
 
-        public GrammarPanelViewModel(Symbols symbols, string inputText, string inputTextTokenized, IEnumerable<LL1GrammarRule> rules, IEnumerable<LL1FirstFollow> firstFollow, LL1ParsingTable? lL1ParsingTable, LL1WordParsing lL1WordParsing, LL1ParsingTree lL1ParsingTree, Progress progressNote, bool hasOutput, string errorRule = "")
+        public bool AddRuleAnabled { get; set; }
+
+        public GrammarPanelViewModel(Symbols symbols, string inputText, string inputTextTokenized, IEnumerable<LL1GrammarRule> rules, IEnumerable<LL1FirstFollow> firstFollow, LL1ParsingTable? lL1ParsingTable, LL1WordParsing lL1WordParsing, LL1ParsingTree lL1ParsingTree, Progress progressNote, bool hasOutput, string errorRule = "", bool addRuleAnabled = true)
         {
             InputText = inputText;
 
             InputTextTokenized = inputTextTokenized;
 
             ErrorRule = errorRule;
+
+            AddRuleAnabled = addRuleAnabled;
 
             Grammar = new LL1Grammar(symbols, rules, firstFollow, lL1ParsingTable, lL1WordParsing, lL1ParsingTree, progressNote, hasOutput);
 
@@ -47,7 +51,7 @@ namespace GrammarTool.ViewModels
                 addEnabled);
 
             Submit = ReactiveCommand.Create(
-                () => new LL1InputGrammar(symbols: Grammar._Symbols,rules:  Grammar._LL1Rules));
+                () => new LL1InputGrammar(symbols: Grammar._Symbols,rules:  Grammar._LL1Rules.Where(x => !string.IsNullOrEmpty(x.Rule))));
 
             Step = ReactiveCommand.Create(
                 () => new LL1WordParsing(word: InputTextTokenized, tokens: Grammar._Symbols._Tokens, Grammar._LL1WordParsing._OutputWord, hasOutput: Grammar._HasOutput)/*,

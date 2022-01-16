@@ -22,6 +22,8 @@ namespace GrammarTool.ViewModels
 
         Example example;
 
+        bool addRuleAnabled;
+
         Database db;
 
         public MainWindowViewModel(Database _db)
@@ -36,7 +38,7 @@ namespace GrammarTool.ViewModels
 
                 if (path != string.Empty) //else => dialog was canceled
                 {
-                    example = Deserialize(path);
+                    example = XmlUtils.DeserializeExample(path);
 
                     LandingPage = new LandingPageViewModel(example.InputText == null ? string.Empty : example.InputText, example.SelectedIndex == null ? 0 : (int)example.SelectedIndex, example.IsChecked);
 
@@ -63,6 +65,8 @@ namespace GrammarTool.ViewModels
         {
             if (Grammar.Grammar._Symbols._Terminals.Count == 0)
             {
+                addRuleAnabled = true;
+
                 var symbols = ((LandingPageViewModel)Content)._SelectedItem._tokenDefinitions.Where(x => x._isChecked).Select(x => x._returnsToken.ToString()).ToList();
 
                 symbols.Add(LL1InputGrammar._EMPTY_EXPANSION);
@@ -71,7 +75,16 @@ namespace GrammarTool.ViewModels
 
                 LandingPage._InputText = ((LandingPageViewModel)Content)._inputText;
 
-                LandingPage._InputTextTokenized = ((LandingPageViewModel)Content)._selectedItem.Tokenize(Grammar.Grammar._Symbols, ((LandingPageViewModel)Content)._inputText);
+                try
+                {
+                    LandingPage._InputTextTokenized = ((LandingPageViewModel)Content)._selectedItem.Tokenize(Grammar.Grammar._Symbols, ((LandingPageViewModel)Content)._inputText);
+                }
+                catch(Exception e)
+                {
+                    Grammar.ErrorRule = e.Message;
+
+                    addRuleAnabled = false;
+                }
 
                 LandingPage._SelectedItem._tokenDefinitions = ((LandingPageViewModel)Content)._SelectedItem._tokenDefinitions;
 
@@ -91,7 +104,7 @@ namespace GrammarTool.ViewModels
             }
 
             //TODO: parsing table will not be updated if rules get changed!
-            var vm = new GrammarPanelViewModel(Grammar.Grammar._Symbols, LandingPage._inputText, LandingPage._InputTextTokenized, Grammar.Grammar._LL1Rules, Grammar.Grammar._LL1FirstFollow, Grammar.Grammar._LL1ParsingTable, Grammar.Grammar._LL1WordParsing, Grammar.Grammar._LL1ParsingTree, Grammar.Grammar._ProgressNote, Grammar.Grammar._HasOutput, Grammar.ErrorRule);
+            var vm = new GrammarPanelViewModel(Grammar.Grammar._Symbols, LandingPage._inputText, LandingPage._InputTextTokenized, Grammar.Grammar._LL1Rules, Grammar.Grammar._LL1FirstFollow, Grammar.Grammar._LL1ParsingTable, Grammar.Grammar._LL1WordParsing, Grammar.Grammar._LL1ParsingTree, Grammar.Grammar._ProgressNote, Grammar.Grammar._HasOutput, Grammar.ErrorRule, addRuleAnabled);
 
             vm.Add.Subscribe(model =>
             {
@@ -105,6 +118,8 @@ namespace GrammarTool.ViewModels
 
             vm.Submit.Subscribe(model =>
             {
+                Grammar.Grammar._LL1Rules = new ObservableCollection<LL1GrammarRule>(Grammar.Grammar._LL1Rules.Where(x => !string.IsNullOrEmpty(x.Rule)));
+
                 if (string.IsNullOrEmpty(model._Error))
                 {
                     var lL1ComputeFirstFollow = new LL1ComputeFirstFollow(Grammar.Grammar._Symbols, model);
@@ -152,7 +167,7 @@ namespace GrammarTool.ViewModels
                 {
                     Example example = new Example(LandingPage._SelectedIndex, LandingPage._SelectedItem._tokenDefinitions.Select(x => x._isChecked).ToArray(), LandingPage._InputText, Grammar.Grammar._LL1Rules.ToArray());
 
-                    var serialed = Serialize(example);
+                    var serialed = XmlUtils.Serialize(example);
 
                     serialed = Regex.Replace(serialed, " encoding=\".+\"", "", RegexOptions.IgnoreCase);
 
@@ -192,7 +207,7 @@ namespace GrammarTool.ViewModels
 
                 if (path != string.Empty) //else => dialog was canceled
                 {
-                    example = Deserialize(path);
+                    example = XmlUtils.DeserializeExample(path);
 
                     LandingPage = new LandingPageViewModel(example.InputText == null ? string.Empty : example.InputText, example.SelectedIndex == null ? 0 : (int)example.SelectedIndex, example.IsChecked);
 
@@ -203,38 +218,6 @@ namespace GrammarTool.ViewModels
             });
 
             Content = vm;
-        }
-
-        private string Serialize(Object o)
-        {
-            if (o == null)
-            {
-                return string.Empty;
-            }
-            try
-            {
-                using (var writer = new StringWriter())
-                {
-                    new XmlSerializer(o.GetType()).Serialize(writer, o);
-                    return writer.ToString();
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error occurred", ex);
-            }
-        }
-
-        private Example Deserialize(string path)
-        {
-            XmlSerializer ser = new XmlSerializer(typeof(Example));
-            Example example;
-            using (XmlReader reader = XmlReader.Create(path))
-            {
-                example = (Example)ser.Deserialize(reader);
-            }
-
-            return example;
         }
     }
 }

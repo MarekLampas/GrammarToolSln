@@ -25,8 +25,6 @@ namespace GrammarTool.Models
 
         public List<Token> _TokenStack { get; set; }
 
-        //public List<Token> _ParsingQueueTokens { get; set; }
-
         public LL1WordParsing(string word, List<Token> tokens, string outputWord, bool hasOutput)
         {
             _Word = word.Replace("\n", " ");

@@ -14,6 +14,10 @@ namespace GrammarTool.Models
 
         public List<TokenDefinition> _tokenDefinitions { get; set; }
 
+        public Scanner()
+        {
+        }
+
         public Scanner(string selected)
         {
             _scannerName = selected;
@@ -54,7 +58,7 @@ namespace GrammarTool.Models
                         symbols._Tokens.Add(new Token(invalidTokenMatch.TokenType, invalidTokenMatch.Value));
                         remainingText = invalidTokenMatch.RemainingText;
 
-                        throw new Exception($"Found invalid token {invalidTokenMatch.Value}!");
+                        throw new Exception($"Invalid input found. Cannot tokenize value {invalidTokenMatch.Value}. It do not match any token definition.");
                     }
                 }
             }
@@ -95,7 +99,7 @@ namespace GrammarTool.Models
                 };
             }
 
-            throw new Exception("Failed to generate invalid token");
+            throw new Exception("There was problem with input text. Failed to generate invalid token.");
         }
     }
 }

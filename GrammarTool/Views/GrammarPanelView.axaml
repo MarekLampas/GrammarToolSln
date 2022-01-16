@@ -116,7 +116,8 @@
                              Text="{Binding NewRule}"
                              Watermark="Insert Rule (e.g., A -> aA)"
                              HorizontalAlignment="Left"
-                             Width="400">
+                             Width="400"
+                             IsEnabled="{Binding AddRuleAnabled}">
                     </TextBox>
                     <Button Grid.Row="0"
                             Grid.Column="1"

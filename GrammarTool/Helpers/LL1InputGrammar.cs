@@ -49,6 +49,18 @@ namespace GrammarTool.Helpers
 
                 nonTerminalToProduction[0] = nonTerminalToProduction[0].Trim();
 
+                if (nonTerminalToProduction[0].Split(" ").Length > 1)
+                {
+                    _Error = $"Rule's left side must be single symbol.";
+                    return;
+                }
+
+                if (_Symbols._Terminals.Contains(nonTerminalToProduction[0]))
+                {
+                    _Error = $"Rule's left side can't contain symbol {nonTerminalToProduction[0]} because it's terminal symbol.";
+                    return;
+                }
+
                 if (!_ProductionDict.ContainsKey(nonTerminalToProduction[0]))
                 {
                     _Symbols.AddNonTerminal(nonTerminalToProduction[0]);
@@ -68,6 +80,14 @@ namespace GrammarTool.Helpers
             {
                 foreach (var production in productionList)
                 {
+                    var outputSymbols = production.Split(' ').Where(x => x.StartsWith("[") && x.EndsWith("]"));
+
+                    if (outputSymbols.Count() > 1)
+                    {
+                        _Error = $"Production can't contain mote than one output symbol but production {production} contains {outputSymbols.Count()}.";
+                        return;
+                    }
+
                     foreach (var symbol in production.Split(" ").Select(x => x.Trim()))
                     {
                         if (!_Symbols._TokensUsed.Contains(symbol) && !_Symbols._NonTerminals.Contains(symbol) && (symbol != LL1InputGrammar._EMPTY_EXPANSION))
@@ -81,7 +101,8 @@ namespace GrammarTool.Helpers
                             {
                                 if (!symbol.StartsWith("[") || !symbol.EndsWith("]") || !_Symbols._TokensUsed.Contains(symbol.Substring(1, symbol.Length - 2)))
                                 {
-                                    _Error = $"Production left side contains symbol '{symbol}', but it's not used terminal or non terminal!";
+                                    _Error = $"Production {production} contains symbol '{symbol}', but it's not used terminal or non terminal!";
+                                    return;
                                 }
                                 else
                                 {

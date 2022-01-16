@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using GrammarTool.Models;
+using GrammarTool.Helpers;
 using GrammarTool.Views;
 using ReactiveUI;
 using System;
@@ -8,11 +9,16 @@ using System.Linq;
 using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
+using System.IO;
 
 namespace GrammarTool.ViewModels
 {
     public class LandingPageViewModel : ViewModelBase
     {
+        readonly string _ScannerPath = @"Scanners";
+        readonly string _ScannerPathCustom = @"Scanners\Custom";
+
         public List<string> _ScannersAvailable { get; set; }
 
         public int _SelectedIndex { get; set; }

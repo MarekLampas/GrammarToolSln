@@ -72,6 +72,10 @@ namespace GrammarTool.Helpers
             public TokenType _returnsToken { get; }
             public bool _isChecked { get; set; }
 
+            public TokenDefinition()
+            {
+            }
+
             public TokenDefinition(TokenType returnsToken, string regexPattern)
             {
                 _regexPattern = regexPattern;
