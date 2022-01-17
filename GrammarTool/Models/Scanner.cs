@@ -24,6 +24,8 @@ namespace GrammarTool.Models
 
             if (selected == "C#")
                 _tokenDefinitions = GetCSharpTokens();
+            else if(selected == "None")
+                _tokenDefinitions = GetEmptyTokens();
             else
                 _tokenDefinitions = GetPythonTokens();
         }

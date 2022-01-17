@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace GrammarTool.Helpers
 {
@@ -12,64 +13,114 @@ namespace GrammarTool.Helpers
     {
         public enum TokenType
         {
-            Undefined,
-            Not,
-            BoolValue,
-            And,
-            Or,
-            Assign,
-            Dot,
-            Minus,
-            Plus,
-            Increment,
-            Decrement,
-            Multiply,
-            Devide,
-            Semicolon,
-            Colon,
-            Switch,
-            Case,
-            Break,
-            Continue,
-            LessOrSameThan,
-            LessThan,
-            MoreOrSameThan,
-            MoreThan,
-            Comma,
+            [XmlEnum(Name = "Equals")]
             Equals,
+            [XmlEnum(Name = "NotEquals")]
             NotEquals,
-            Variable,
-            DataType,
-            List,
-            Dictionary,
-            AccessModifier,
-            Class,
-            In,
-            NotIn,
+            [XmlEnum(Name = "Not")]
+            Not,
+            [XmlEnum(Name = "LessOrSameThan")]
+            LessOrSameThan,
+            [XmlEnum(Name = "MoreOrSameThan")]
+            MoreOrSameThan,
+            [XmlEnum(Name = "LessThan")]
+            LessThan,
+            [XmlEnum(Name = "MoreThan")]
+            MoreThan,
+            [XmlEnum(Name = "Assign")]
+            Assign,
+            [XmlEnum(Name = "Colon")]
+            Colon,
+            [XmlEnum(Name = "Semicolon")]
+            Semicolon,
+            [XmlEnum(Name = "Dot")]
+            Dot,
+            [XmlEnum(Name = "Comma")]
+            Comma,
+            [XmlEnum(Name = "RoundBracketOpen")]
             RoundBracketOpen,
+            [XmlEnum(Name = "RoundBracketClose")]
             RoundBracketClose,
+            [XmlEnum(Name = "CurlyBracketOpen")]
             CurlyBracketOpen,
+            [XmlEnum(Name = "CurlyBracketClose")]
             CurlyBracketClose,
+            [XmlEnum(Name = "SquareBracketOpen")]
             SquareBracketOpen,
+            [XmlEnum(Name = "SquareBracketClose")]
             SquareBracketClose,
+            [XmlEnum(Name = "Number")]
             Number,
+            [XmlEnum(Name = "Increment")]
+            Increment,
+            [XmlEnum(Name = "Decrement")]
+            Decrement,
+            [XmlEnum(Name = "Plus")]
+            Plus,
+            [XmlEnum(Name = "Minus")]
+            Minus,
+            [XmlEnum(Name = "Multiply")]
+            Multiply,
+            [XmlEnum(Name = "Devide")]
+            Devide,
+            [XmlEnum(Name = "Variable")]
+            Variable,
+            [XmlEnum(Name = "DataType")]
+            DataType,
+            [XmlEnum(Name = "List")]
+            List,
+            [XmlEnum(Name = "Dictionary")]
+            Dictionary,
+            [XmlEnum(Name = "AccessModifier")]
+            AccessModifier,
+            [XmlEnum(Name = "Class")]
+            Class,
+            [XmlEnum(Name = "And")]
+            And,
+            [XmlEnum(Name = "Or")]
+            Or,
+            [XmlEnum(Name = "In")]
+            In,
+            [XmlEnum(Name = "If")]
             If,
+            [XmlEnum(Name = "Elif")]
             Elif,
+            [XmlEnum(Name = "Else")]
             Else,
+            [XmlEnum(Name = "Foreach")]
             Foreach,
+            [XmlEnum(Name = "For")]
             For,
+            [XmlEnum(Name = "BoolValue")]
+            BoolValue,
+            [XmlEnum(Name = "Undefined")]
+            Undefined,
+            [XmlEnum(Name = "Switch")]
+            Switch,
+            [XmlEnum(Name = "Case")]
+            Case,
+            [XmlEnum(Name = "Break")]
+            Break,
+            [XmlEnum(Name = "Continue")]
+            Continue,
+            [XmlEnum(Name = "Print")]
             Print,
+            [XmlEnum(Name = "StringValue")]
             StringValue,
+            [XmlEnum(Name = "Identifier")]
             Identifier,
+            [XmlEnum(Name = "SequenceTerminator")]
             SequenceTerminator,
+            [XmlEnum(Name = "Invalid")]
             Invalid
         }
 
         public class TokenDefinition
         {
             public string _regexPattern { get; set; }
-            public Regex _regex { get; }
-            public TokenType _returnsToken { get; }
+            [XmlIgnore]
+            public Regex _regex { get; private set; }
+            public TokenType _returnsToken { get; set; }
             public bool _isChecked { get; set; }
 
             public TokenDefinition()
@@ -107,6 +158,11 @@ namespace GrammarTool.Helpers
                 }
 
             }
+
+            public void CreateRegex()
+            {
+                _regex = new Regex(_regexPattern, RegexOptions.IgnoreCase);
+            }
         }
 
         public class TokenMatch
@@ -115,6 +171,19 @@ namespace GrammarTool.Helpers
             public TokenType TokenType { get; set; }
             public string Value { get; set; }
             public string RemainingText { get; set; }
+        }
+
+        public static List<TokenDefinition> GetEmptyTokens()
+        {
+            List<TokenDefinition> _tokenDefinitions = new List<TokenDefinition>();
+
+            //If more rules takes same string, first found is used. So pay attance to order!
+            foreach (var token in (TokenType[])Enum.GetValues(typeof(TokenType)))
+            {
+                _tokenDefinitions.Add(new TokenDefinition(token, string.Empty));
+            }
+
+            return _tokenDefinitions;
         }
 
         public static List<TokenDefinition> GetCSharpTokens()

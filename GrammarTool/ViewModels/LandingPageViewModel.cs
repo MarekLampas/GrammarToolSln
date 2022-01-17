@@ -16,10 +16,10 @@ namespace GrammarTool.ViewModels
 {
     public class LandingPageViewModel : ViewModelBase
     {
-        readonly string _ScannerPath = @"Scanners";
-        readonly string _ScannerPathCustom = @"Scanners\Custom";
+        public readonly string _ScannerPath = @"Scanners";
+        public readonly string _ScannerPathCustom = @"Scanners\Custom";
 
-        public List<string> _ScannersAvailable { get; set; }
+        public List<string> _ScannersBuildIn { get; set; }
 
         public int _SelectedIndex { get; set; }
 
@@ -52,17 +52,36 @@ namespace GrammarTool.ViewModels
                 async () => await ChooseFileExample());
 
             //TODO:instead of this list load all scanners saved on drive - json or xml with node Name and list node tokens definitions saved under uniqeue filename
-            _ScannersAvailable = new List<string>();
-            _ScannersAvailable.Add("C#");
-            _ScannersAvailable.Add("Python");
+            _ScannersBuildIn = new List<string>();
+            _ScannersBuildIn.Add("CSharp");
+            _ScannersBuildIn.Add("Python");
 
             //Source: https://stackoverflow.com/questions/59937058/c-wpf-avalonia-on-button-click-change-text - RaiseAndSetIfChanged() finaly made gui to refresh
             //dead end: https://stackoverflow.com/questions/9186979/how-to-use-selectedindexchanged-event-of-combobox
             //before I tried to create scanner instace after selecting availeble scanner from string list binded to combobox based on selectedIndex
             _Scanner = new List<Scanner>();
-            foreach(var scanner in _ScannersAvailable)
+            foreach (var scannerName in _ScannersBuildIn)
             {
-                _Scanner.Add(new Scanner(scanner));
+                var scanner = XmlUtils.DeserializeScanner(Path.Combine(_ScannerPath, $"{scannerName}.xml"));
+                foreach (var tokenDefinition in scanner._tokenDefinitions)
+                {
+                    tokenDefinition.CreateRegex();
+                }
+                _Scanner.Add(scanner);
+
+                //File.WriteAllText(Path.Combine(_ScannerPath, scannerName + ".xml"), XmlUtils.Serialize(new Scanner(scannerName == "CSharp" ? "C#" : scannerName)));
+            }
+
+            var scannersCustom = Directory.GetFiles(_ScannerPathCustom, "*.xml", SearchOption.AllDirectories);
+
+            foreach (var scannerName in scannersCustom)
+            {
+                var scanner = XmlUtils.DeserializeScanner(scannerName);
+                foreach (var tokenDefinition in scanner._tokenDefinitions)
+                {
+                    tokenDefinition.CreateRegex();
+                }
+                _Scanner.Add(scanner);
             }
 
             _SelectedItem = _Scanner[selectedIndex];

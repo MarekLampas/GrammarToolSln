@@ -1,0 +1,79 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="500"
+             x:Class="GrammarTool.Views.ScannerPanelView">
+  <DockPanel>
+    <Button DockPanel.Dock="Bottom"
+            Background="DarkRed"
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Center">
+      Cancel
+    </Button>
+    <Button DockPanel.Dock="Bottom"
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Center"
+            Command="{Binding Submit}">
+      Submit
+    </Button>
+    <Grid DockPanel.Dock="Top" ColumnDefinitions="200,*" RowDefinitions="Auto,Auto,Auto" Margin="4">
+      <ComboBox Name="SelectScanner"
+              Grid.Row="0" Grid.Column="1"
+              HorizontalAlignment="Stretch"
+              HorizontalContentAlignment="Left"
+              Items="{Binding _Scanner}"
+              Background="Black"
+              SelectedIndex="{Binding _SelectedIndex}"
+              SelectedItem="{Binding _SelectedItem}">
+        <ComboBox.Styles>
+          <Style Selector="ComboBoxItem">
+            <Setter Property="Background" Value="Black" />
+          </Style>
+        </ComboBox.Styles>
+        <ComboBox.ItemTemplate>
+          <DataTemplate>
+            <TextBlock Text="{Binding _scannerName}"/>
+          </DataTemplate>
+        </ComboBox.ItemTemplate>
+      </ComboBox>
+      <TextBlock Grid.Row="0" Grid.Column="0"
+                 Padding="5 8 5 0">Load values from template:</TextBlock>
+    </Grid>
+    <TextBox DockPanel.Dock="Top" Text="{Binding _ScannerNameInserted}" Watermark="Insert name"/>
+    <Grid DockPanel.Dock="Top" ColumnDefinitions="*,150,100,100" RowDefinitions="Auto,Auto,Auto" Margin="4">
+      <TextBlock Grid.Row="0" Grid.Column="0"
+                 Padding="5 8 5 0">Please, order tokens. If some token is subpart of another, higher placed one will be used.</TextBlock>
+      <TextBlock Grid.Row="0" Grid.Column="1"
+                 Padding="5 8 5 0">Move selected token:</TextBlock>
+      <Button HorizontalAlignment="Center"
+              Grid.Row="0" Grid.Column="2"
+              Command="{Binding MoveUp}"
+              Width="80"
+              HorizontalContentAlignment="Center">&#9650; Up</Button>
+      <Button HorizontalAlignment="Center"
+              Grid.Row="0" Grid.Column="3"
+              Command="{Binding MoveDown}"
+              Width="80"
+              HorizontalContentAlignment="Center">&#9660; Down</Button>
+    </Grid>
+    <ScrollViewer IsTabStop="True">
+      <StackPanel>
+        <Grid IsVisible="{Binding PaneOpenNoWordInserted}">
+          <DataGrid Name="TokenDefinitions"
+                    Items="{Binding _NewScanner._tokenDefinitions}"
+                    SelectedItem="{Binding _SelectedToken}"
+                    AutoGenerateColumns="False"
+                    Margin="0 5 0 0"
+                    RowBackground="#252525"
+                    Background="#202020">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="Token" Binding="{Binding _returnsToken}" Width="250" IsReadOnly="True"/>
+              <DataGridTextColumn Header="Pattern" Binding="{Binding _regexPattern}" Width="*" MinWidth="250"/>
+            </DataGrid.Columns>
+          </DataGrid>
+        </Grid>
+      </StackPanel>
+    </ScrollViewer>
+  </DockPanel>
+</UserControl>

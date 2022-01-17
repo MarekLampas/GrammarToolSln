@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GrammarTool.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace GrammarTool.Helpers
                 using (var writer = new StringWriter())
                 {
                     new XmlSerializer(o.GetType()).Serialize(writer, o);
-                    return writer.ToString();
+                    return writer.ToString().Replace(" encoding=\"utf-16\"", "");
                 }
             }
             catch (Exception ex)
@@ -42,6 +43,37 @@ namespace GrammarTool.Helpers
             }
 
             return example;
+        }
+
+        //TODO: verification
+        public static Scanner DeserializeScanner(string path)
+        {
+            XmlSerializer ser = new XmlSerializer(typeof(Scanner));
+            Scanner scanner;
+            using (XmlReader reader = XmlReader.Create(path))
+            {
+                scanner = (Scanner)ser.Deserialize(reader);
+            }
+
+            return scanner;
+        }
+
+
+
+        //Source: https://stackoverflow.com/questions/1120198/most-efficient-way-to-remove-special-characters-from-string
+        public static string RemoveSpecialCharacters(string str)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            foreach (char c in str)
+            {
+                if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '_')
+                {
+                    sb.Append(c);
+                }
+            }
+
+            return sb.ToString();
         }
     }
 }

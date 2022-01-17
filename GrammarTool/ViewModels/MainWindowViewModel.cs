@@ -32,6 +32,8 @@ namespace GrammarTool.ViewModels
 
             LandingPage = new LandingPageViewModel(string.Empty);
 
+            ScannerPage = new ScannerPanelViewModel(LandingPage._Scanner);
+
             LandingPage.OpenFileDialogCommand.Subscribe(async model =>
             {
                 string path = await model;
@@ -58,6 +60,8 @@ namespace GrammarTool.ViewModels
         }
 
         public LandingPageViewModel LandingPage { get; set; }
+
+        public ScannerPanelViewModel ScannerPage { get; set; }
 
         public GrammarPanelViewModel Grammar { get; set; }
 
@@ -215,6 +219,63 @@ namespace GrammarTool.ViewModels
 
                     OpenExample();
                 }
+            });
+
+            Content = vm;
+        }
+
+        public void CreateScanner()
+        {
+            var vm = new ScannerPanelViewModel(ScannerPage._Scanner, ScannerPage._SelectedIndex, true, ScannerPage._ScannerNameInserted);
+
+            vm.MoveUp.Subscribe(model =>
+            {
+                ScannerPage._Scanner = ((ScannerPanelViewModel)Content)._Scanner;
+
+                ScannerPage._SelectedIndex = ((ScannerPanelViewModel)Content)._SelectedIndex;
+
+                ScannerPage._ScannerNameInserted = ((ScannerPanelViewModel)Content)._ScannerNameInserted;
+
+                CreateScanner();
+            });
+
+            vm.MoveDown.Subscribe(model =>
+            {
+                ScannerPage._Scanner = ((ScannerPanelViewModel)Content)._Scanner;
+
+                ScannerPage._SelectedIndex = ((ScannerPanelViewModel)Content)._SelectedIndex;
+
+                ScannerPage._ScannerNameInserted = ((ScannerPanelViewModel)Content)._ScannerNameInserted;
+
+                CreateScanner();
+            });
+
+            vm.Submit.Subscribe(model =>
+            {
+                var serialed = XmlUtils.Serialize(model);
+
+                serialed = Regex.Replace(serialed, " encoding=\".+\"", "", RegexOptions.IgnoreCase);
+
+                var scannerName = XmlUtils.RemoveSpecialCharacters(((ScannerPanelViewModel)Content)._ScannerNameInserted);
+
+                if (!string.IsNullOrEmpty(scannerName))
+                {
+                    var count = Directory.GetFiles(LandingPage._ScannerPathCustom, $"{scannerName}*.xml").Length;
+
+                    scannerName = count == 0 ? $"{scannerName}.xml" : $"{scannerName}_{count}.xml";
+                }
+                else
+                {
+                    var count = Directory.GetFiles(LandingPage._ScannerPathCustom, $"customScanner*.xml").Length;
+
+                    scannerName = count == 0 ? $"customScanner.xml" : $"customScanner_{count}.xml";
+                }
+
+                File.WriteAllText(Path.Combine(LandingPage._ScannerPathCustom, scannerName), serialed);
+
+                LandingPage = new LandingPageViewModel(string.Empty);
+
+                OpenExample();
             });
 
             Content = vm;
