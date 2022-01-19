@@ -70,7 +70,13 @@ namespace GrammarTool.ViewModels
                 _Scanner.AddRange(new List<Scanner>(scanner));
             }
 
+            selectedIndex = selectedIndex < 0 ? 0 : selectedIndex;
+
             _SelectedIndex = selectedIndex;
+
+            List<TokenDefinition> backup = new List<TokenDefinition>(_Scanner[selectedIndex]._tokenDefinitions);
+
+            _Scanner[selectedIndex]._tokenDefinitions = new List<TokenDefinition>(_NewScanner._tokenDefinitions);
 
             _SelectedItem = _Scanner[selectedIndex];
 
@@ -79,6 +85,8 @@ namespace GrammarTool.ViewModels
             _ScannerNameInserted = scannerName;
 
             _scannerNameInserted = scannerName;
+
+            _Scanner[selectedIndex]._tokenDefinitions = backup;
 
             var submitEnabled = this.WhenAnyValue(
                 x => x._ScannerNameInserted,
@@ -93,6 +101,9 @@ namespace GrammarTool.ViewModels
             Submit = ReactiveCommand.Create(
                 () => CreateRegexForNewScanner(),
                 submitEnabled);
+
+            Cancel = ReactiveCommand.Create(
+                () => _Scanner[0]);
         }
 
         private void ScannerChanged(Scanner value)
@@ -110,6 +121,22 @@ namespace GrammarTool.ViewModels
             }
             else
             {
+                foreach (var token in newScanner._tokenDefinitions)
+                {
+                    var index = newScanner._tokenDefinitions.IndexOf(token);
+                    if (index < value._tokenDefinitions.Count)
+                    {
+                        if (!Object.ReferenceEquals(token._regexPattern, value._tokenDefinitions[newScanner._tokenDefinitions.IndexOf(token)]._regexPattern))
+                        {
+                            token._regexPattern = "";
+                        }
+                    }
+                    else
+                    {
+                        token._regexPattern = "";
+                    }
+                }
+
                 foreach (var token in value._tokenDefinitions)
                 {
                     newScanner._tokenDefinitions.Where(x => x._returnsToken == token._returnsToken).First()._regexPattern = token._regexPattern;
@@ -129,22 +156,25 @@ namespace GrammarTool.ViewModels
         {
             var index = _NewScanner._tokenDefinitions.IndexOf(_SelectedToken);
 
-            if (up)
+            if (index > -1)
             {
-                if (index > 0)
+                if (up)
                 {
-                    _NewScanner._tokenDefinitions.Insert(index - 1, _NewScanner._tokenDefinitions[index]);
+                    if (index > 0)
+                    {
+                        _NewScanner._tokenDefinitions.Insert(index - 1, _NewScanner._tokenDefinitions[index]);
 
-                    _NewScanner._tokenDefinitions.RemoveAt(index + 1);
+                        _NewScanner._tokenDefinitions.RemoveAt(index + 1);
+                    }
                 }
-            }
-            else
-            {
-                if (index < _NewScanner._tokenDefinitions.Count - 1)
+                else
                 {
-                    _NewScanner._tokenDefinitions.Insert(index + 2, _NewScanner._tokenDefinitions[index]);
+                    if (index < _NewScanner._tokenDefinitions.Count - 1)
+                    {
+                        _NewScanner._tokenDefinitions.Insert(index + 2, _NewScanner._tokenDefinitions[index]);
 
-                    _NewScanner._tokenDefinitions.RemoveAt(index);
+                        _NewScanner._tokenDefinitions.RemoveAt(index);
+                    }
                 }
             }
 
@@ -178,7 +208,6 @@ namespace GrammarTool.ViewModels
 
         public ReactiveCommand<Unit, Scanner> Submit { get; }
 
-        //TODO: Implement
         public ReactiveCommand<Unit, Scanner> Cancel { get; }
     }
 }

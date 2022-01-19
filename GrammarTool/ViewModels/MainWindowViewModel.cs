@@ -278,6 +278,13 @@ namespace GrammarTool.ViewModels
                 OpenExample();
             });
 
+            vm.Cancel.Subscribe(model =>
+            {
+                Grammar = new GrammarPanelViewModel(new Symbols(), string.Empty, string.Empty, db.GetRules(), db.InicializeFirstFollow(), null, new LL1WordParsing(string.Empty, new List<Token>(), string.Empty, false), new LL1ParsingTree(), new Progress(), false);
+
+                OpenExample();
+            });
+
             Content = vm;
         }
     }

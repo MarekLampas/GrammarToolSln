@@ -8,7 +8,8 @@
     <Button DockPanel.Dock="Bottom"
             Background="DarkRed"
             HorizontalAlignment="Stretch"
-            HorizontalContentAlignment="Center">
+            HorizontalContentAlignment="Center"
+            Command="{Binding Cancel}">
       Cancel
     </Button>
     <Button DockPanel.Dock="Bottom"
