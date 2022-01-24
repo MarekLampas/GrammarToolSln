@@ -14,105 +14,105 @@ namespace GrammarTool.Helpers
         public enum TokenType
         {
             [XmlEnum(Name = "Equals")]
-            Equals,
+            equals,
             [XmlEnum(Name = "NotEquals")]
-            NotEquals,
+            notEquals,
             [XmlEnum(Name = "Not")]
-            Not,
+            not,
             [XmlEnum(Name = "LessOrSameThan")]
-            LessOrSameThan,
+            lessOrSameThan,
             [XmlEnum(Name = "MoreOrSameThan")]
-            MoreOrSameThan,
+            moreOrSameThan,
             [XmlEnum(Name = "LessThan")]
-            LessThan,
+            lessThan,
             [XmlEnum(Name = "MoreThan")]
-            MoreThan,
+            moreThan,
             [XmlEnum(Name = "Assign")]
-            Assign,
+            assign,
             [XmlEnum(Name = "Colon")]
-            Colon,
+            colon,
             [XmlEnum(Name = "Semicolon")]
-            Semicolon,
+            semicolon,
             [XmlEnum(Name = "Dot")]
-            Dot,
+            dot,
             [XmlEnum(Name = "Comma")]
-            Comma,
+            comma,
             [XmlEnum(Name = "RoundBracketOpen")]
-            RoundBracketOpen,
+            roundBracketOpen,
             [XmlEnum(Name = "RoundBracketClose")]
-            RoundBracketClose,
+            roundBracketClose,
             [XmlEnum(Name = "CurlyBracketOpen")]
-            CurlyBracketOpen,
+            curlyBracketOpen,
             [XmlEnum(Name = "CurlyBracketClose")]
-            CurlyBracketClose,
+            curlyBracketClose,
             [XmlEnum(Name = "SquareBracketOpen")]
-            SquareBracketOpen,
+            squareBracketOpen,
             [XmlEnum(Name = "SquareBracketClose")]
-            SquareBracketClose,
+            squareBracketClose,
             [XmlEnum(Name = "Number")]
-            Number,
+            number,
             [XmlEnum(Name = "Increment")]
-            Increment,
+            increment,
             [XmlEnum(Name = "Decrement")]
-            Decrement,
+            decrement,
             [XmlEnum(Name = "Plus")]
-            Plus,
+            plus,
             [XmlEnum(Name = "Minus")]
-            Minus,
+            minus,
             [XmlEnum(Name = "Multiply")]
-            Multiply,
+            multiply,
             [XmlEnum(Name = "Devide")]
-            Devide,
+            devide,
             [XmlEnum(Name = "Variable")]
-            Variable,
+            variable,
             [XmlEnum(Name = "DataType")]
-            DataType,
+            dataType,
             [XmlEnum(Name = "List")]
-            List,
+            list,
             [XmlEnum(Name = "Dictionary")]
-            Dictionary,
+            dictionary,
             [XmlEnum(Name = "AccessModifier")]
-            AccessModifier,
+            accessModifier,
             [XmlEnum(Name = "Class")]
-            Class,
+            classIdentifier,
             [XmlEnum(Name = "And")]
-            And,
+            and,
             [XmlEnum(Name = "Or")]
-            Or,
+            or,
             [XmlEnum(Name = "In")]
-            In,
+            inside,
             [XmlEnum(Name = "If")]
-            If,
+            condition,
             [XmlEnum(Name = "Elif")]
-            Elif,
+            elseCondition,
             [XmlEnum(Name = "Else")]
-            Else,
+            defaultCondition,
             [XmlEnum(Name = "Foreach")]
-            Foreach,
+            foreachLoop,
             [XmlEnum(Name = "For")]
-            For,
+            forLoop,
             [XmlEnum(Name = "BoolValue")]
-            BoolValue,
+            boolValue,
             [XmlEnum(Name = "Undefined")]
-            Undefined,
+            undefined,
             [XmlEnum(Name = "Switch")]
-            Switch,
+            switchCondition,
             [XmlEnum(Name = "Case")]
-            Case,
+            caseCondition,
             [XmlEnum(Name = "Break")]
-            Break,
+            breakLoop,
             [XmlEnum(Name = "Continue")]
-            Continue,
+            continueLoop,
             [XmlEnum(Name = "Print")]
-            Print,
+            print,
             [XmlEnum(Name = "StringValue")]
-            StringValue,
+            stringValue,
             [XmlEnum(Name = "Identifier")]
-            Identifier,
+            identifier,
             [XmlEnum(Name = "SequenceTerminator")]
-            SequenceTerminator,
+            sequenceTerminator,
             [XmlEnum(Name = "Invalid")]
-            Invalid
+            invalid
         }
 
         public class TokenDefinition
@@ -191,53 +191,53 @@ namespace GrammarTool.Helpers
             List<TokenDefinition> _tokenDefinitions = new List<TokenDefinition>();
 
             //If more rules takes same string, first found is used. So pay attance to order!
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Equals, "^=="));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.NotEquals, "^!="));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Not, "^!"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.LessOrSameThan, "^<="));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.MoreOrSameThan, "^>="));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.LessThan, "^<"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.MoreThan, "^>"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Assign, "^="));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Colon, "^:"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Semicolon, "^;"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Dot, "^\\."));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Comma, "^,"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.RoundBracketOpen, "^\\("));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.RoundBracketClose, "^\\)"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.CurlyBracketOpen, "^{"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.CurlyBracketClose, "^}"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.SquareBracketOpen, "^\\["));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.SquareBracketClose, "^\\]"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Number, "^\\d+\\.\\d+|^\\d+"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Increment, "^\\+\\+"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Decrement, "^--"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Plus, "^\\+"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Minus, "^-"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Multiply, "^\\*"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Devide, "^/"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Variable, "^var"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.DataType, "^bool|^int|^float|^double|^string"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.List, "^List"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Dictionary, "^Dictionary"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.AccessModifier, "^public|^private|^internal"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Class, "^class"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.And, "^&&"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Or, "^\\|\\|"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.In, "^in"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.If, "^if"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Else, "^else"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Foreach, "^foreach"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.For, "^for"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.BoolValue, "^true|^false"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Undefined, "^null"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Switch, "^switch"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Case, "^case"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Break, "^break"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Continue, "^continue"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Print, "^Console.WriteLine|^Console.Write"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.StringValue, "^[\"'][^'\"]*['\"]"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Identifier, "^[a-zA-Z][a-zA-Z0-9]*"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.equals, "^=="));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.notEquals, "^!="));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.not, "^!"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.lessOrSameThan, "^<="));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.moreOrSameThan, "^>="));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.lessThan, "^<"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.moreThan, "^>"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.assign, "^="));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.colon, "^:"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.semicolon, "^;"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.dot, "^\\."));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.comma, "^,"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.roundBracketOpen, "^\\("));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.roundBracketClose, "^\\)"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.curlyBracketOpen, "^{"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.curlyBracketClose, "^}"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.squareBracketOpen, "^\\["));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.squareBracketClose, "^\\]"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.number, "^\\d+\\.\\d+|^\\d+"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.increment, "^\\+\\+"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.decrement, "^--"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.plus, "^\\+"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.minus, "^-"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.multiply, "^\\*"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.devide, "^/"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.variable, "^var"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.dataType, "^bool|^int|^float|^double|^string"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.list, "^List"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.dictionary, "^Dictionary"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.accessModifier, "^public|^private|^internal"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.classIdentifier, "^class"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.and, "^&&"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.or, "^\\|\\|"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.inside, "^in"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.condition, "^if"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.defaultCondition, "^else"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.foreachLoop, "^foreach"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.forLoop, "^for"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.boolValue, "^true|^false"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.undefined, "^null"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.switchCondition, "^switch"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.caseCondition, "^case"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.breakLoop, "^break"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.continueLoop, "^continue"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.print, "^Console.WriteLine|^Console.Write"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.stringValue, "^[\"'][^'\"]*['\"]"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.identifier, "^[a-zA-Z][a-zA-Z0-9]*"));
 
             return _tokenDefinitions;
         }
@@ -247,45 +247,45 @@ namespace GrammarTool.Helpers
             List<TokenDefinition> _tokenDefinitions = new List<TokenDefinition>();
 
             //If more rules takes same string, first found is used. So pay attance to order!
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Equals, "^=="));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.NotEquals, "^!="));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Not, "^not"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.LessOrSameThan, "^<="));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.MoreOrSameThan, "^>="));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.LessThan, "^<"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.MoreThan, "^>"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Assign, "^="));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Colon, "^:"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Dot, "^\\."));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Comma, "^,"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.RoundBracketOpen, "^\\("));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.RoundBracketClose, "^\\)"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.CurlyBracketOpen, "^{"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.CurlyBracketClose, "^}"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.SquareBracketOpen, "^\\["));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.SquareBracketClose, "^\\]"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Number, "^\\d+"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Increment, "^\\+\\+"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Decrement, "^--"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Plus, "^\\+"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Minus, "^-"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Multiply, "^\\*"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Devide, "^/"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.And, "^and"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Or, "^or"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.In, "^in"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.If, "^if"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Elif, "^elif"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Else, "^else"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Foreach, "^foreach"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.For, "^for"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.BoolValue, "^True|^False"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Undefined, "^None"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Break, "^break"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Continue, "^continue"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Print, "^print"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.StringValue, "^[\"'][^'\"]*['\"]"));
-            _tokenDefinitions.Add(new TokenDefinition(TokenType.Identifier, "^[a-zA-Z][a-zA-Z0-9]+"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.equals, "^=="));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.notEquals, "^!="));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.not, "^not"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.lessOrSameThan, "^<="));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.moreOrSameThan, "^>="));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.lessThan, "^<"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.moreThan, "^>"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.assign, "^="));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.colon, "^:"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.dot, "^\\."));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.comma, "^,"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.roundBracketOpen, "^\\("));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.roundBracketClose, "^\\)"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.curlyBracketOpen, "^{"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.curlyBracketClose, "^}"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.squareBracketOpen, "^\\["));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.squareBracketClose, "^\\]"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.number, "^\\d+"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.increment, "^\\+\\+"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.decrement, "^--"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.plus, "^\\+"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.minus, "^-"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.multiply, "^\\*"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.devide, "^/"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.and, "^and"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.or, "^or"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.inside, "^in"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.condition, "^if"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.elseCondition, "^elif"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.defaultCondition, "^else"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.foreachLoop, "^foreach"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.forLoop, "^for"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.boolValue, "^True|^False"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.undefined, "^None"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.breakLoop, "^break"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.continueLoop, "^continue"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.print, "^print"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.stringValue, "^[\"'][^'\"]*['\"]"));
+            _tokenDefinitions.Add(new TokenDefinition(TokenType.identifier, "^[a-zA-Z][a-zA-Z0-9]+"));
 
             return _tokenDefinitions;
         }

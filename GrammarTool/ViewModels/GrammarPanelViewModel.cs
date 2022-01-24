@@ -67,7 +67,7 @@ namespace GrammarTool.ViewModels
         public string NewRule
         {
             get => rule;
-            set { this.RaiseAndSetIfChanged(ref rule, string.IsNullOrEmpty(value) ? rule : value); /*Grammar.GetSuggestions(rule); TODO: try to add AtoCompleteBox to Rules*/}
+            set { this.RaiseAndSetIfChanged(ref rule, string.IsNullOrEmpty(value) ? rule : value.Replace(LL1InputGrammar._EMPTY_EXPANSION_INSERT, LL1InputGrammar._EMPTY_EXPANSION)); /*Grammar.GetSuggestions(rule); TODO: try to add AtoCompleteBox to Rules*/}
         }
 
         public LL1Grammar Grammar { get; }

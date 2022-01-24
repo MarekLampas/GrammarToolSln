@@ -12,7 +12,8 @@ namespace GrammarTool.Helpers
         //special characters for grammar processing that can't be user as grammar symbols
         public const string _STARTING_SYMBOL = "S";
         public const string _RULES_SPLITTER = "/";
-        public const string _EMPTY_EXPANSION = "@";
+        public const string _EMPTY_EXPANSION = "Є";
+        public const string _EMPTY_EXPANSION_INSERT = "@";
         public const string _EMPTY_STRING = "";
         public const string _END_STRING = "$";
 
@@ -27,6 +28,8 @@ namespace GrammarTool.Helpers
         public LL1InputGrammar(Symbols symbols, IEnumerable<LL1GrammarRule> rules)
         {
             _Symbols = symbols;
+
+            _Symbols._NonTerminals.Clear();
 
             _HasOutput = false;
 

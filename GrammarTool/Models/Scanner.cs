@@ -65,7 +65,7 @@ namespace GrammarTool.Models
                 }
             }
 
-            symbols._Tokens.Add(new Token(TokenType.SequenceTerminator, string.Empty));
+            symbols._Tokens.Add(new Token(TokenType.sequenceTerminator, string.Empty));
 
             return inputTextTokenized;
         }
@@ -96,7 +96,7 @@ namespace GrammarTool.Models
                 {
                     IsMatch = true,
                     RemainingText = lqlText.Substring(match.Length),
-                    TokenType = TokenType.Invalid,
+                    TokenType = TokenType.invalid,
                     Value = match.Value.Trim()
                 };
             }
