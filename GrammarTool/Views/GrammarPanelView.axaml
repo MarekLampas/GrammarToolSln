@@ -64,11 +64,22 @@
         <ScrollViewer IsTabStop="True">
           <StackPanel>
             <ListBox Items="{Binding Grammar._Symbols._TokensUsed}"
-                     DockPanel.Dock="Left"
+                     DockPanel.Dock="Top"
                      IsVisible="{Binding !PaneOpen}"
                      HorizontalAlignment="Stretch"
                      Margin="0 10 0 0"
                      ScrollViewer.VerticalScrollBarVisibility="Visible">
+              <ListBox.ItemTemplate>
+                <DataTemplate>
+                  <TextBlock Text="{Binding}"/>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+            <ListBox Items="{Binding Grammar._UsedRules}"
+                 DockPanel.Dock="Top"
+                 IsVisible="{Binding WordInserted}"
+                 HorizontalAlignment="Stretch"
+                 ScrollViewer.VerticalScrollBarVisibility="Visible">
               <ListBox.ItemTemplate>
                 <DataTemplate>
                   <TextBlock Text="{Binding}"/>

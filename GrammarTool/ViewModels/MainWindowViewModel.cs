@@ -48,7 +48,7 @@ namespace GrammarTool.ViewModels
                 }
             });
 
-            Grammar = new GrammarPanelViewModel(new Symbols(), string.Empty, string.Empty, db.GetRules(), db.InicializeFirstFollow(), null, new LL1WordParsing(string.Empty, new List<Token>(), string.Empty, false), new LL1ParsingTree(), new Progress(), false);
+            Grammar = new GrammarPanelViewModel(new Symbols(), string.Empty, string.Empty, db.GetRules(), db.InicializeFirstFollow(), null, new LL1WordParsing(string.Empty, new List<Token>(), string.Empty, false), new LL1ParsingTree(), new Progress(), new List<string>(), false);
 
             Content = LandingPage;
         }
@@ -108,7 +108,7 @@ namespace GrammarTool.ViewModels
             }
 
             //TODO: parsing table will not be updated if rules get changed!
-            var vm = new GrammarPanelViewModel(Grammar.Grammar._Symbols, LandingPage._inputText, LandingPage._InputTextTokenized, Grammar.Grammar._LL1Rules, Grammar.Grammar._LL1FirstFollow, Grammar.Grammar._LL1ParsingTable, Grammar.Grammar._LL1WordParsing, Grammar.Grammar._LL1ParsingTree, Grammar.Grammar._ProgressNote, Grammar.Grammar._HasOutput, Grammar.ErrorRule, addRuleAnabled);
+            var vm = new GrammarPanelViewModel(Grammar.Grammar._Symbols, LandingPage._inputText, LandingPage._InputTextTokenized, Grammar.Grammar._LL1Rules, Grammar.Grammar._LL1FirstFollow, Grammar.Grammar._LL1ParsingTable, Grammar.Grammar._LL1WordParsing, Grammar.Grammar._LL1ParsingTree, Grammar.Grammar._ProgressNote, Grammar.Grammar._UsedRules, Grammar.Grammar._HasOutput, Grammar.ErrorRule, addRuleAnabled);
 
             vm.Add.Subscribe(model =>
             {
@@ -154,6 +154,8 @@ namespace GrammarTool.ViewModels
 
                     Grammar.Grammar._LL1ParsingTree.AddNode(LL1InputGrammar._STARTING_SYMBOL + "0", LL1InputGrammar._STARTING_SYMBOL, Brushes.LightGray);
 
+                    Grammar.Grammar._UsedRules = new List<string>();
+
                     initialStep = true;
                 }
 
@@ -183,13 +185,13 @@ namespace GrammarTool.ViewModels
             {
                 if (model)
                 {
-                    Grammar = new GrammarPanelViewModel(Grammar.Grammar._Symbols, LandingPage._inputText, LandingPage._InputTextTokenized, Grammar.Grammar._LL1Rules, db.InicializeFirstFollow(), null, new LL1WordParsing(string.Empty, new List<Token>(), string.Empty, false), new LL1ParsingTree(), new Progress(), false);
+                    Grammar = new GrammarPanelViewModel(Grammar.Grammar._Symbols, LandingPage._inputText, LandingPage._InputTextTokenized, Grammar.Grammar._LL1Rules, db.InicializeFirstFollow(), null, new LL1WordParsing(string.Empty, new List<Token>(), string.Empty, false), new LL1ParsingTree(), new Progress(), new List<string>(), false);
 
                     CreateGrammar();
                 }
                 else
                 {
-                    Grammar = new GrammarPanelViewModel(new Symbols(), string.Empty, string.Empty, db.GetRules(), db.InicializeFirstFollow(), null, new LL1WordParsing(string.Empty, new List<Token>(), string.Empty, false), new LL1ParsingTree(), new Progress(), false);
+                    Grammar = new GrammarPanelViewModel(new Symbols(), string.Empty, string.Empty, db.GetRules(), db.InicializeFirstFollow(), null, new LL1WordParsing(string.Empty, new List<Token>(), string.Empty, false), new LL1ParsingTree(), new Progress(), new List<string>(), false);
 
                     OpenExample();
                 }
@@ -215,7 +217,7 @@ namespace GrammarTool.ViewModels
 
                     LandingPage = new LandingPageViewModel(example.InputText == null ? string.Empty : example.InputText, example.SelectedIndex == null ? 0 : (int)example.SelectedIndex, example.IsChecked);
 
-                    Grammar = new GrammarPanelViewModel(new Symbols(), string.Empty, string.Empty, db.GetRules(), db.InicializeFirstFollow(), null, new LL1WordParsing(string.Empty, new List<Token>(), string.Empty, false), new LL1ParsingTree(), new Progress(), false);
+                    Grammar = new GrammarPanelViewModel(new Symbols(), string.Empty, string.Empty, db.GetRules(), db.InicializeFirstFollow(), null, new LL1WordParsing(string.Empty, new List<Token>(), string.Empty, false), new LL1ParsingTree(), new Progress(), new List<string>(), false);
 
                     OpenExample();
                 }
@@ -280,7 +282,7 @@ namespace GrammarTool.ViewModels
 
             vm.Cancel.Subscribe(model =>
             {
-                Grammar = new GrammarPanelViewModel(new Symbols(), string.Empty, string.Empty, db.GetRules(), db.InicializeFirstFollow(), null, new LL1WordParsing(string.Empty, new List<Token>(), string.Empty, false), new LL1ParsingTree(), new Progress(), false);
+                Grammar = new GrammarPanelViewModel(new Symbols(), string.Empty, string.Empty, db.GetRules(), db.InicializeFirstFollow(), null, new LL1WordParsing(string.Empty, new List<Token>(), string.Empty, false), new LL1ParsingTree(), new Progress(), new List<string>(), false);
 
                 OpenExample();
             });

@@ -91,7 +91,7 @@ namespace GrammarTool.Models
 
             if (outputSymbols.Count() > 1)
             {
-                throw new Exception("Rule can't contain more then one output symbol.");
+                throw new Exception($"Rule can't contain more then one output symbol. But rule {production} contains {outputSymbols.Count()}!");
             }
             else if (outputSymbols.Count() == 1)
             {
@@ -113,7 +113,7 @@ namespace GrammarTool.Models
 
                 if(_Tokens.Count() == count)
                 {
-                    throw new Exception("Output not found!");
+                    throw new Exception($"There is no output value available for output symbol {outputSymbols.First()} in rule {production}!");
                 }
             }
         }

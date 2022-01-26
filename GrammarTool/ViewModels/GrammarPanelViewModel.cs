@@ -16,7 +16,9 @@ namespace GrammarTool.ViewModels
 {
     class GrammarPanelViewModel : ViewModelBase
     {
-        string rule;
+        //Can't change font
+        //Source: https://github.com/AvaloniaUI/Avalonia/issues/5136
+        string rule = "X ->";
 
         public string InputText { get; set; }
 
@@ -26,7 +28,7 @@ namespace GrammarTool.ViewModels
 
         public bool AddRuleAnabled { get; set; }
 
-        public GrammarPanelViewModel(Symbols symbols, string inputText, string inputTextTokenized, IEnumerable<LL1GrammarRule> rules, IEnumerable<LL1FirstFollow> firstFollow, LL1ParsingTable? lL1ParsingTable, LL1WordParsing lL1WordParsing, LL1ParsingTree lL1ParsingTree, Progress progressNote, bool hasOutput, string errorRule = "", bool addRuleAnabled = true)
+        public GrammarPanelViewModel(Symbols symbols, string inputText, string inputTextTokenized, IEnumerable<LL1GrammarRule> rules, IEnumerable<LL1FirstFollow> firstFollow, LL1ParsingTable? lL1ParsingTable, LL1WordParsing lL1WordParsing, LL1ParsingTree lL1ParsingTree, Progress progressNote, List<string> usedRules, bool hasOutput, string errorRule = "", bool addRuleAnabled = true)
         {
             InputText = inputText;
 
@@ -36,7 +38,7 @@ namespace GrammarTool.ViewModels
 
             AddRuleAnabled = addRuleAnabled;
 
-            Grammar = new LL1Grammar(symbols, rules, firstFollow, lL1ParsingTable, lL1WordParsing, lL1ParsingTree, progressNote, hasOutput);
+            Grammar = new LL1Grammar(symbols, rules, firstFollow, lL1ParsingTable, lL1WordParsing, lL1ParsingTree, progressNote, usedRules, hasOutput);
 
             var addEnabled = this.WhenAnyValue(
                 x => x.NewRule,

@@ -30,11 +30,13 @@ namespace GrammarTool.Models
 
         public Progress _ProgressNote { get; set; }
 
+        public List<string> _UsedRules { get; set; }
+
         public ObservableCollection<string> _Suggestions { get; set; }
 
         public bool _HasOutput { get; set; }
 
-        public LL1Grammar(Symbols symbols, IEnumerable<LL1GrammarRule> rules, IEnumerable<LL1FirstFollow> firstFollow, LL1ParsingTable? lL1ParsingTable, LL1WordParsing lL1WordParsing, LL1ParsingTree lL1ParsingTree, Progress progressNote, bool hasOutput)
+        public LL1Grammar(Symbols symbols, IEnumerable<LL1GrammarRule> rules, IEnumerable<LL1FirstFollow> firstFollow, LL1ParsingTable? lL1ParsingTable, LL1WordParsing lL1WordParsing, LL1ParsingTree lL1ParsingTree, Progress progressNote, List<string> usedRules, bool hasOutput)
         {
             _Symbols = symbols;
 
@@ -73,6 +75,8 @@ namespace GrammarTool.Models
 
             _ProgressNote = progressNote;
 
+            _UsedRules = usedRules;
+
             _HasOutput = hasOutput;
 
             _Suggestions = new ObservableCollection<string>();
@@ -107,7 +111,17 @@ namespace GrammarTool.Models
                         }
                         else
                         {
-                            _LL1WordParsing.Expand(productionEmpty.First());
+                            try
+                            {
+                                _LL1WordParsing.Expand(productionEmpty.First());
+                            }
+                            catch (Exception ex)
+                            {
+                                _ProgressNote.Note = ex.Message;
+                                _ProgressNote.Color = Brushes.DarkRed;
+                                return;
+                            }
+                            _UsedRules.Add(productionEmpty.First());
                             _ProgressNote.Note = $"First symbol on stack is Non-Terminal so we need to expand.\nNon-Terminal on stack is '{nonTerminal}' and Terminal on input is '{terminal}'.\nBecause there is no production in this cell but there is possibility to use empty expansion '{LL1InputGrammar._EMPTY_EXPANSION}', we are aplying this production.";
                         }
                     }
@@ -125,8 +139,17 @@ namespace GrammarTool.Models
                     {
                         var actualNode = _LL1WordParsing.GetParsingQueuedTreeSymbol();
 
-                        _LL1WordParsing.Expand(production.First());
-
+                        try
+                        {
+                            _LL1WordParsing.Expand(production.First());
+                        }
+                        catch(Exception ex)
+                        {
+                            _ProgressNote.Note = ex.Message;
+                            _ProgressNote.Color = Brushes.DarkRed;
+                            return;
+                        }
+                        _UsedRules.Add(production.First());
                         _ProgressNote.Note = $"First symbol on stack is Non-Terminal so we need to expand.\nNon-Terminal on stack is '{nonTerminal}' and Terminal on input is '{terminal}' so we use production '{production.First()}' to expand our stack.";
 
                         var prod = production.First().Split("->")[1].Trim();
@@ -169,6 +192,7 @@ namespace GrammarTool.Models
                     }
                     else
                     {
+                        _UsedRules.Add($"Consume '{terminalQueue}'");
                         _ProgressNote.Note = $"First symbol on stack is Terminal so we need to consume.\nWe can see that terminal on stack '{terminalQueue}' is equal to terminal on input '{terminalWord}'.\nTherefore they can be consumed.";
                         _LL1WordParsing.Consume();
                     }
@@ -178,6 +202,7 @@ namespace GrammarTool.Models
             {
                 var terminalQueue = _LL1WordParsing.GetParsingQueueSymbol();
 
+                _UsedRules.Add($"Output '{terminalQueue}'");
                 _ProgressNote.Note = $"First symbol on stack is Output symbol so we need to add it's attribute to output.\nWe can see that terminal on stack '{terminalQueue}' so we must find it's corresponding atribute.";
                 _LL1WordParsing.AddOutput();
             }

@@ -12,8 +12,8 @@ namespace GrammarTool.Helpers
         //special characters for grammar processing that can't be user as grammar symbols
         public const string _STARTING_SYMBOL = "S";
         public const string _RULES_SPLITTER = "/";
-        public const string _EMPTY_EXPANSION = "Є";
-        public const string _EMPTY_EXPANSION_INSERT = "@";
+        public const string _EMPTY_EXPANSION = "ε";
+        public const string _EMPTY_EXPANSION_INSERT = "epsilon";
         public const string _EMPTY_STRING = "";
         public const string _END_STRING = "$";
 
@@ -48,6 +48,8 @@ namespace GrammarTool.Helpers
 
             foreach (var rule in rules)
             {
+                rule.Rule.Replace(LL1InputGrammar._EMPTY_EXPANSION_INSERT, LL1InputGrammar._EMPTY_EXPANSION);
+
                 var nonTerminalToProduction = rule.Rule.Split("->");
 
                 nonTerminalToProduction[0] = nonTerminalToProduction[0].Trim();
