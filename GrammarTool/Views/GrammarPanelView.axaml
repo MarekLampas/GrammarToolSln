@@ -102,6 +102,13 @@
                 <TextBlock IsVisible="{Binding !PaneOpen}">Grammar</TextBlock>
               </DockPanel>
               <DockPanel IsVisible="{Binding PaneClosedNoWordInserted}">
+                <Grid DockPanel.Dock="Top" ColumnDefinitions="*,100" RowDefinitions="Auto,Auto,Auto" Margin="4">
+                  <Button HorizontalAlignment="Center"
+                          Grid.Row="0" Grid.Column="1"
+                          Width="80"
+                          Command="{Binding Refresh}"
+                          HorizontalContentAlignment="Center">Refresh</Button>
+                </Grid>
                 <StackPanel DockPanel.Dock="Top" Spacing="5">
                   <ItemsControl Items="{Binding Grammar._LL1Rules}"
                            DockPanel.Dock="Left"

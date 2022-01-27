@@ -64,6 +64,9 @@ namespace GrammarTool.ViewModels
 
             Back = ReactiveCommand.Create(
                 () => StepEnabled);
+
+            Refresh = ReactiveCommand.Create(
+                () => this);
         }
 
         public string NewRule
@@ -120,5 +123,8 @@ namespace GrammarTool.ViewModels
         public ReactiveCommand<Unit, Task<string>> Save { get; }
 
         public ReactiveCommand<Unit, bool> Back { get; }
+
+        public ReactiveCommand<Unit, GrammarPanelViewModel> Refresh { get; }
+
     }
 }

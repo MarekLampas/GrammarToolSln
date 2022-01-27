@@ -198,6 +198,17 @@ namespace GrammarTool.ViewModels
                 return;
             });
 
+            vm.Refresh.Subscribe(model =>
+            {
+                Grammar.Grammar._LL1Rules = new ObservableCollection<LL1GrammarRule>(Grammar.Grammar._LL1Rules.Where(x => !string.IsNullOrEmpty(x.Rule)));
+                foreach(var rule in Grammar.Grammar._LL1Rules)
+                {
+                    rule.Rule = rule.Rule.Replace(LL1InputGrammar._EMPTY_EXPANSION_INSERT, LL1InputGrammar._EMPTY_EXPANSION);
+                }
+
+                CreateGrammar();
+            });
+
             GrammarPanelView.SetParsingTableForView(vm.Grammar._LL1ParsingTable._LL1TerminalToProductions);
 
             Content = vm;
