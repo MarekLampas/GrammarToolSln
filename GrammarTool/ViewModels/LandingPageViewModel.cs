@@ -17,7 +17,7 @@ namespace GrammarTool.ViewModels
     public class LandingPageViewModel : ViewModelBase
     {
         public readonly string _ScannerPath = @"Scanners";
-        public readonly string _ScannerPathCustom = @"Scanners\Custom";
+        public readonly string _ScannerPathCustom = @"Scanners/Custom";
 
         public List<string> _ScannersBuildIn { get; set; }
 
