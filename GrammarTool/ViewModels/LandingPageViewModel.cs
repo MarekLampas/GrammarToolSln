@@ -55,6 +55,7 @@ namespace GrammarTool.ViewModels
             _ScannersBuildIn = new List<string>();
             _ScannersBuildIn.Add("CSharp");
             _ScannersBuildIn.Add("Python");
+            _ScannersBuildIn.Add("JavaScript");
 
             //Source: https://stackoverflow.com/questions/59937058/c-wpf-avalonia-on-button-click-change-text - RaiseAndSetIfChanged() finaly made gui to refresh
             //dead end: https://stackoverflow.com/questions/9186979/how-to-use-selectedindexchanged-event-of-combobox
